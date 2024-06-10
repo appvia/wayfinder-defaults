@@ -1,0 +1,10 @@
+apiVersion: package.appvia.io/v2beta2
+kind: Repository
+metadata:
+  annotations:
+    appvia.io/createdBy: "Wayfinder"
+  name: wayfinder-builtin
+spec:
+  url: https://charts.wayfinder.run
+  description: |
+    A small collection of charts for packages shipped with Wayfinder

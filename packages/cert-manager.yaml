@@ -1,0 +1,166 @@
+apiVersion: package.appvia.io/v2beta2
+kind: Package
+metadata:
+  name: cert-manager
+  annotations:
+    appvia.io/createdBy: "Wayfinder"
+    appvia.io/displayName: "Cert Manager"
+spec:
+  description: Provides the capability to self-serve certificates
+  version: "1.14.5-1"
+  installNamespace: cert-manager
+
+  helm:
+    helmTimeout: 30s
+    releaseName: cert-manager
+    repositoryRef: wayfinder-builtin
+    chartName: cert-manager
+    chartVersion: "1.14.5"
+    valuesTemplate: |
+      cainjector:
+        enabled: true
+        replicaCount: 1
+      extraArgs:
+      - --dns01-recursive-nameservers-only=true
+      fullnameOverride: cert-manager
+      global:
+        podSecurityPolicy:
+          enabled: false
+          useAppArmor: false
+      ingressShim:
+        defaultIssuerKind: ClusterIssuer
+      installCRDs: true
+      replicaCount: 1
+      resources:
+        limits:
+          cpu: 30m
+          memory: 512Mi
+        requests:
+          cpu: 10m
+          memory: 32Mi
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      strategy:
+        rollingUpdate:
+          maxUnavailable: 1
+        type: RollingUpdate
+      podLabels:
+      {{ .Package.WorkloadIdentity.PodLabels | toYaml | indent 2 }}
+      serviceAccount:
+        create: true
+        name: {{ .Package.WorkloadIdentity.ServiceAccountName }}
+        annotations:
+      {{ .Package.WorkloadIdentity.ServiceAccountAnnotations | toYaml | indent 4 }}
+      webhook:
+        networkPolicy:
+          enabled: true
+        replicaCount: 1
+        strategy:
+          rollingUpdate:
+            maxUnavailable: 1
+          type: RollingUpdate
+
+  workloadIdentity:
+    serviceAccountName: cert-manager
+    role:
+      aws:
+        customIAMPolicyTemplate: |
+          Version: "2012-10-17"
+          Statement:
+          {{- if .Cluster.DNSZones }}
+          - Sid: "AllowRoute53ChangeResourceRecordSets"
+            Effect: "Allow"
+            Action:
+            - "route53:ChangeResourceRecordSets"
+            Resource:
+            {{- range .Cluster.DNSZones }}
+            {{- if .AWS }}
+            - "arn:aws:route53:::{{ trimPrefix "/" .ZoneID }}"
+            {{- end }}
+            {{- end }}
+          {{- end }}
+          # must always have a valid role for the workload identity to work
+          - Sid: "AllowRoute53List"
+            Effect: "Allow"
+            Action:
+            - "route53:GetChange"
+            - "route53:ListHostedZones"
+            - "route53:ListResourceRecordSets"
+            - "route53:ListHostedZonesByName"
+            Resource:
+            - "*"
+
+      azure:
+        roleAssignmentsTemplate: |
+          # must always have a valid role for the workload identity to work
+          - scope: /subscriptions/{{ .CloudAccessConfig.Azure.Subscription }}
+            roleDefinitionName: Reader
+          {{- if .Cluster.DNSZones }}
+            {{- range .Cluster.DNSZones }}
+              {{- if .Azure }}
+          - scope: {{ .ZoneID }}
+            roleDefinitionName: Contributor
+              {{- end }}
+            {{- end }}
+          {{- end }}
+
+      gcp:
+        iamRoleBindingsTemplate: |
+          # must always have a valid role for the workload identity to work
+          - role: roles/dns.reader
+            scopeType: Project
+          {{- if .Cluster.DNSZones }}
+            {{- range .Cluster.DNSZones }}
+              {{- if .GCP }}
+          - role: roles/dns.admin
+            scopeType: Project
+              {{- end }}
+            {{- end }}
+          {{- end }}
+
+  manifests:
+    - name: le-prod-issuer.yaml
+      template: |
+        apiVersion: cert-manager.io/v1
+        kind: ClusterIssuer
+        metadata:
+          name: le-prod
+          annotations:
+            appvia.io/appCertIssuer: "true"
+        spec:
+          acme:
+            email: cert-expiry@myorg.io
+            server: https://acme-v02.api.letsencrypt.org/directory
+            privateKeySecretRef:
+              name: le-prod
+            solvers:
+            {{- range .Cluster.DNSZones }}
+            {{- if not .Private }}
+            - dns01:
+              {{- if .AWS }}
+                route53:
+                  region: {{ .AWS.Region }}
+                  hostedZoneID: {{ .ZoneID }}
+              {{- end }}
+              {{- if .Azure }}
+                azureDNS:
+                  subscriptionID: {{ .Azure.Subscription }}
+                  resourceGroupName: {{ .Azure.ResourceGroup }}
+                  hostedZoneName: {{ .Domain }}
+              {{- end }}
+              {{- if .GCP }}
+                cloudDNS:
+                  project:  {{ .GCP.Project }}
+                  hostedZoneName: {{ .ZoneID }}
+              {{- end }}
+              selector:
+                dnsZones:
+                - {{ .Domain }}
+            {{- end }}
+            {{- end }}
+            - http01:
+                ingress:
+                  class: external
+                  serviceType: ClusterIP

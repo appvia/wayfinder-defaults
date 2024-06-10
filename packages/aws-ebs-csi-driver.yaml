@@ -1,0 +1,85 @@
+---
+apiVersion: package.appvia.io/v2beta2
+kind: Package
+metadata:
+  name: aws-ebs-csi-driver
+  annotations:
+    appvia.io/createdBy: "Wayfinder"
+    appvia.io/displayName: "EBS CSI Storage Driver (AWS)"
+spec:
+  description: Provides volumes to EKS clusters using AWS EBS
+  version: "2.30.0-1"
+  installNamespace: kube-system
+  dependencies:
+  - aws-ebs-csi-snapshot-controller
+
+  helm:
+    repositoryRef: wayfinder-builtin
+    releaseName: aws-ebs-csi-driver
+    chartName: aws-ebs-csi-driver
+    chartVersion: "2.30.0"
+    valuesTemplate: |
+      controller:
+        serviceAccount:
+          name: {{ .Package.WorkloadIdentity.ServiceAccountName }}
+          annotations:
+      {{ .Package.WorkloadIdentity.ServiceAccountAnnotations | toYaml | indent 6 }}
+    # The tests on the AWS EBS CSI helm package are very extensive and take a long time to run
+    skipTests: true
+
+  manifests:
+  - template: |
+      apiVersion: storage.k8s.io/v1
+      kind: StorageClass
+      metadata:
+        annotations:
+          ### Make the default encrypted storage class
+          storageclass.kubernetes.io/is-default-class: "true"
+        name: gp3
+      parameters:
+        type: gp3
+        encrypted: "true"
+      provisioner: kubernetes.io/aws-ebs
+      reclaimPolicy: Delete
+      volumeBindingMode: WaitForFirstConsumer
+      allowVolumeExpansion: true
+
+  workloadIdentity:
+    serviceAccountName: ebs-csi-controller-sa
+    role:
+      aws:
+        iamPolicyARNs:
+        - arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
+        customIAMPolicyTemplate: |
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "AllowKMS",
+                "Effect": "Allow",
+                "Action": [
+                  "kms:RevokeGrant",
+                  "kms:CreateGrant",
+                  "kms:ListGrants"
+                ],
+                "Resource": "arn:aws:kms:*:*:key/*",
+                "Condition": {
+                  "Bool": {
+                    "kms:GrantIsForAWSResource": "true"
+                  }
+                }
+              },
+              {
+                "Sid": "AllowEncryptDecrypt",
+                "Effect": "Allow",
+                "Action": [
+                  "kms:Decrypt",
+                  "kms:Encrypt",
+                  "kms:DescribeKey",
+                  "kms:ReEncrypt*",
+                  "kms:GenerateDataKey*"
+                ],
+                "Resource": "arn:aws:kms:*:*:key/*"
+              }
+            ]
+          }

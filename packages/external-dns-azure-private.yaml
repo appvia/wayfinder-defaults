@@ -1,0 +1,83 @@
+apiVersion: package.appvia.io/v2beta2
+kind: Package
+metadata:
+  name: external-dns-azure-private
+  annotations:
+    appvia.io/createdBy: "Wayfinder"
+    appvia.io/displayName: "External DNS for Azure (Private)"
+spec:
+  version: "7.2.1-2"
+  installNamespace: external-dns-private
+  description: External DNS for Azure allows Kubernetes to manage DNS zones on Azure Private DNS
+
+  helm:
+    releaseName: external-dns-azure-private
+    helmTimeout: 300s
+    repositoryRef: wayfinder-builtin
+    chartName: external-dns
+    chartVersion: "7.2.1"
+    valuesTemplate: |
+      domainFilters:
+      {{- range .Cluster.DNSZones }}
+      {{- if .Private }}
+      - {{ .Domain }}
+      {{- end }}
+      {{- end }}
+      fullnameOverride: external-dns-private
+      logFormat: json
+      policy: sync
+      txtOwnerId: {{ .Cluster.Name }}
+      replicas: 2
+      crd:
+        create: false
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: false
+      rbac:
+        apiVersion: v1
+      resources:
+        limits:
+          cpu: 20m
+          memory: 50Mi
+        requests:
+          cpu: 10m
+          memory: 50Mi
+      serviceAccount:
+        create: true
+        name: {{ .Package.WorkloadIdentity.ServiceAccountName }}
+        annotations:
+      {{ .Package.WorkloadIdentity.ServiceAccountAnnotations | toYaml | indent 4 }}
+      podLabels:
+      {{ .Package.WorkloadIdentity.PodLabels | toYaml | indent 2 }}
+      {{- $resGrp := "" }}
+      {{- range .Cluster.DNSZones }}
+        {{- if .Private }}
+          {{- $resGrp = .Azure.ResourceGroup }}
+        {{- end }}
+      {{- end }}
+      {{- if $resGrp }}
+      provider: azure-private-dns
+      azure:
+        tenantId: {{ .CloudAccessConfig.Azure.Tenant }}
+        subscriptionId: {{ .CloudAccessConfig.Azure.Subscription }}
+        useWorkloadIdentityExtension: true
+        resourceGroup: {{ $resGrp }}
+      {{- end }}
+
+  workloadIdentity:
+    serviceAccountName: external-dns
+    role:
+      azure:
+        roleAssignmentsTemplate: |
+          # must always have a valid role for the workload identity to work
+          - scope: /subscriptions/{{ .CloudAccessConfig.Azure.Subscription }}
+            roleDefinitionName: Reader
+          {{- if .Cluster.DNSZones }}
+            {{- range .Cluster.DNSZones }}
+              {{- if .Private }}
+          - scope: {{ .ZoneID }}
+            roleDefinitionName: Contributor
+              {{- end }}
+            {{- end }}
+          {{- end }}
