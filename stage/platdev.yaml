@@ -1,0 +1,9 @@
+apiVersion: org.appvia.io/v2beta1
+kind: Stage
+metadata:
+  name: platdev
+  annotations:
+    appvia.io/packageValidation: "true"
+spec:
+  displayName: Platform-dev
+  description: Used to validate platform configuration before making available to other stages
