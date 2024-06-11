@@ -1,0 +1,33 @@
+apiVersion: policydelivery.appvia.io/v1alpha1
+kind: GlobalClusterPolicy
+metadata:
+  name: networkpolicy.default.global
+spec:
+  # This policy adds a default-deny of ingress traffic network policy to all 'app' namespaces,
+  # i.e. those created by users via appenvs and namespace claims, in all clusters.
+  policy:
+    kyverno:
+      validationFailureAction: enforce
+      background: false
+      rules:
+      - name: default-deny
+        match:
+          any:
+          - resources:
+              kinds:
+              - Namespace
+              selector:
+                matchLabels:
+                  appvia.io/namespaceType: app
+        generate:
+          apiVersion: networking.k8s.io/v1
+          kind: NetworkPolicy
+          name: default-denial-ingress
+          namespace: "{{request.object.metadata.name}}"
+          synchronize: true
+          data:
+            spec:
+              podSelector: {}
+              policyTypes:
+              - Ingress
+    type: Kyverno
