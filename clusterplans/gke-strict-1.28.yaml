@@ -1,0 +1,48 @@
+apiVersion: compute.appvia.io/v2beta2
+kind: ClusterPlan
+metadata:
+  name: gke-strict
+spec:
+  description: Hardened GKE cluster with a default "restricted" PSS Policy and no public ingress controller.
+  version: "1.28.0"
+  provider: GKE
+
+  scope:
+    allWorkspaces: true
+    allStages: true
+
+  cluster: 
+    kubernetesVersion: "1.28"
+    packages:
+    - name: ingress-nginx-internal
+      version: "4.10.1-2"
+    - name: cert-manager
+      version: "1.14.5-1"
+    - name: external-dns
+      version: "7.2.1-2"
+    - name: kyverno
+      version: "2.7.3-5"
+
+    providerDetails:
+      gke:
+        enableHTTPLoadBalancer: false
+        enableHorizontalPodAutoscaler: true
+        enableShieldedNodes: true
+        enableStackDriverLogging: true
+        enableStackDriverMetrics: true
+        masterIPV4Cidr: 172.16.0.16/28
+
+    security:
+      podSecurityStandard:
+        enabled: true
+        defaultProfile: restricted
+        allowed: ["restricted"]
+
+  network:
+    networkPlan: gke-standard
+    authorizedMasterNetworks:
+      - cidr: 0.0.0.0/0
+        name: default
+    authorizedNetworks:
+      - cidr: 0.0.0.0/0
+        name: default

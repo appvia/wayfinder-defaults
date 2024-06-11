@@ -1,0 +1,49 @@
+apiVersion: compute.appvia.io/v2beta2
+kind: ClusterPlan
+metadata:
+  name: aks-sandbox
+spec:
+  description: Low cost cluster configuration for testing purposes
+  version: "1.29.0"
+  provider: AKS
+
+  scope:
+    allWorkspaces: true
+    allStages: true
+
+  cluster:
+    kubernetesVersion: "1.29"
+    packages:
+    - name: ingress-nginx
+      version: "4.10.1-1"
+    - name: cert-manager
+      version: "1.14.5-1"
+    - name: external-dns
+      version: "7.2.1-2"
+    - name: kyverno
+      version: "2.7.3-5"
+    - name: terranetes-controller
+      version: "0.7.12-1"
+
+    providerDetails:
+      aks:
+        skuTier: Free
+        nodeOSUpgradeChannel: NodeImage
+
+    security:
+      podSecurityStandard:
+        enabled: true
+        defaultProfile: baseline
+        allowed: ["restricted", "baseline", "privileged"]
+
+  network:
+    networkPlan: aks-standard
+    authorizedMasterNetworks:
+    - cidr: 0.0.0.0/0
+      name: default
+    authorizedNetworks:
+    - cidr: 0.0.0.0/0
+      name: default
+    aksServicesNetwork: 172.16.0.0/16
+
+    

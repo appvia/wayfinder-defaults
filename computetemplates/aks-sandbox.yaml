@@ -1,0 +1,38 @@
+apiVersion: compute.appvia.io/v2beta2
+kind: ComputeTemplate
+metadata:
+  name: aks-sandbox
+spec:
+  description: Low cost cluster configuration for testing purposes with a small primary node pool and a secondary spot node pool
+  provider: AKS
+
+  nodePools:
+  - diskSize: 60
+    autoscaling:
+      enabled: true
+      maxSize: 2
+      minSize: 1
+    image: Linux
+    machine: Standard_D2s_v5
+    maxPodsPerNode: 50
+    logicalName: system
+    size: 1
+    providerDetails:
+      aks:
+        mode: system
+  - diskSize: 60
+    spot:
+      aks: {}
+      enabled: true
+    autoscaling:
+      enabled: true
+      maxSize: 10
+      minSize: 1
+    image: Linux
+    machine: Standard_D2s_v5
+    maxPodsPerNode: 50
+    logicalName: compute
+    size: 1
+    providerDetails:
+      aks:
+        mode: user

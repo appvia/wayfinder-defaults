@@ -1,0 +1,22 @@
+apiVersion: compute.appvia.io/v2beta2
+kind: ComputeTemplate
+metadata:
+  name: aks-general-purpose
+spec:
+  description: General purpose AKS node pool
+  provider: AKS
+
+  nodePools:
+  - logicalName: system
+    diskSize: 60
+    image: Linux
+    machine: Standard_D2s_v5
+    maxPodsPerNode: 50
+    providerDetails:
+      aks:
+        mode: system
+    size: 2
+    autoscaling:
+      enabled: true
+      maxSize: 10
+      minSize: 2
