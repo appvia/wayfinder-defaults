@@ -3,7 +3,7 @@ kind: ClusterPlan
 metadata:
   name: gke-strict
 spec:
-  description: Hardened GKE cluster with a default "restricted" PSS Policy and no public ingress controller.
+  description: Hardened GKE cluster with a restricted PSS Policy and no public ingress controller
   version: "1.29.0"
   provider: GKE
 

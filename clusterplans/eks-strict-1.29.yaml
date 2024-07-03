@@ -3,7 +3,7 @@ kind: ClusterPlan
 metadata:
   name: eks-strict
 spec:
-  description: Hardened EKS cluster with a default "restricted" PSS Policy and no public ingress controller.
+  description: Hardened EKS cluster with a restricted PSS Policy and no public ingress controller
   version: "1.29.0"
   provider: EKS
 

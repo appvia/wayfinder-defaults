@@ -3,7 +3,7 @@ kind: ClusterPlan
 metadata:
   name: aks-general-purpose
 spec:
-  description: General purpose AKS cluster.
+  description: General purpose AKS cluster
   version: "1.28.0"
   provider: AKS
 

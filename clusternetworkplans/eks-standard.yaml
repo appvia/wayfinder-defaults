@@ -3,7 +3,7 @@ kind: ClusterNetworkPlan
 metadata:
   name: eks-standard
 spec:
-  summary: General purpose EKS cluster network.
+  summary: General purpose EKS cluster network
 
   template:
     plan: eks-standard

@@ -3,7 +3,7 @@ kind: ClusterPlan
 metadata:
   name: eks-general-purpose
 spec:
-  description: General purpose EKS cluster.
+  description: General purpose EKS cluster
   version: "1.28.0"
   provider: EKS
 

@@ -3,7 +3,7 @@ kind: ClusterNetworkPlan
 metadata:
   name: gke-standard
 spec:
-  summary: General purpose GKE cluster network.
+  summary: General purpose GKE cluster network
 
   template:
     plan: gke-standard

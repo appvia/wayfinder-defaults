@@ -1,12 +1,12 @@
 # wayfinder-defaults
 
-This repository contains a default set of configuration to prepare and manage your instance of
+This repository contains a default set of configuration to prepare and manage your instance of 
 Appvia Wayfinder.
 
-## Contributing
+## Contributing
 
-We welcome pull requests to this repository to suggest changes and improvements to the defaults
-contained here. 
+We welcome pull requests to this repository to suggest changes and improvements to the defaults 
+contained here.
 
 If you wish to contribute new configurations to share with the Wayfinder community, please propose
 those on the [wayfinder-community-contrib](https://github.com/appvia/wayfinder-community-contrib)
