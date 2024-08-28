@@ -10,7 +10,7 @@ spec:
   - diskSize: 30
     autoscaling:
       enabled: true
-      maxSize: 10
+      maxSize: 3
       minSize: 1
     image: COS_CONTAINERD
     machine: n2-standard-2
@@ -18,71 +18,4 @@ spec:
     logicalName: compute
     size: 1
     spot:
-      enabled: false # Enable this when we move from Preemptible to Spot VMs (WF-1993)
-
-  quotaLimits:
-    default: small
-    templates:
-    - name: small
-      constraints:
-        hardQuota:
-          "requests.cpu": "1"
-          "requests.memory": "3.5Gi"
-        limitRanges:
-        - type: Pod
-          max:
-            "cpu": "256m"
-            "memory": "896Mi"
-            "ephemeral-storage": "1.875Gi"
-      resourceDefaults:
-      - type: Container
-        default:
-          "cpu": "256m"
-          "memory": "896Mi"
-          "ephemeral-storage": "10Mi"
-        defaultRequest:
-          "cpu": "50m"
-          "memory": "200Mi"
-    - name: medium
-      constraints:
-        hardQuota:
-          "requests.cpu": "2"
-          "requests.memory": "7Gi"
-        limitRanges:
-        - type: Pod
-          max:
-            "cpu": "512m"
-            "memory": "1792Mi"
-            "ephemeral-storage": "3.75Gi"
-      resourceDefaults:
-      - type: Container
-        default:
-          "cpu": "512m"
-          "memory": "1792Mi"
-          "ephemeral-storage": "500Mi"
-        defaultRequest:
-          "cpu": "50m"
-          "memory": "200Mi"
-    - name: large
-      constraints:
-        hardQuota:
-          "requests.cpu": "14Gi"
-          "requests.memory": "7Gi"
-        limitRanges:
-        - type: Pod
-          max:
-            "cpu": "1"
-            "memory": "3584Mi"
-            "ephemeral-storage": "7.5Gi"
-      resourceDefaults:
-      - type: Container
-        default:
-          "cpu": "1"
-          "memory": "1792Mi"
-          "ephemeral-storage": "1Gi"
-        defaultRequest:
-          "cpu": "50m"
-          "memory": "200Mi"
-
-
-
+      enabled: false

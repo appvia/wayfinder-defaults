@@ -4,7 +4,7 @@ metadata:
   name: eks-strict
 spec:
   description: Hardened EKS cluster with a restricted PSS Policy and no public ingress controller
-  version: "1.29.0"
+  version: "1.0.1"
   provider: EKS
 
   scope:
@@ -29,7 +29,7 @@ spec:
     - name: cert-manager
       version: "1.14.5-1"
     - name: external-dns
-      version: "7.2.1-2"
+      version: "7.2.1-3"
     - name: kyverno
       version: "2.7.3-5"
     - name: terranetes-controller

@@ -5,6 +5,7 @@ metadata:
   annotations:
     appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Tigera operator"
+    appvia.io/packageProviderFilter: "EKS"
 spec:
   version: "3.27.3-1"
   installNamespace: kube-system

@@ -1,10 +1,10 @@
 apiVersion: compute.appvia.io/v2beta2
 kind: ClusterPlan
 metadata:
-  name: aks-sandbox
+  name: aks-strict
 spec:
-  description: Low cost cluster configuration for testing purposes
-  version: "1.28.0"
+  description: Hardened AKS cluster with a restricted PSS Policy and no public ingress controller
+  version: "1.0.1"
   provider: AKS
 
   scope:
@@ -12,13 +12,13 @@ spec:
     allStages: true
 
   cluster:
-    kubernetesVersion: "1.28"
+    kubernetesVersion: "1.29"
     packages:
-    - name: ingress-nginx
-      version: "4.10.1-1"
+    - name: ingress-nginx-internal
+      version: "4.10.1-2"
     - name: cert-manager
       version: "1.14.5-1"
-    - name: external-dns
+    - name: external-dns-azure-private
       version: "7.2.1-2"
     - name: kyverno
       version: "2.7.3-5"
@@ -27,14 +27,14 @@ spec:
 
     providerDetails:
       aks:
-        skuTier: Free
+        skuTier: Standard
         nodeOSUpgradeChannel: NodeImage
 
     security:
       podSecurityStandard:
         enabled: true
-        defaultProfile: baseline
-        allowed: ["restricted", "baseline", "privileged"]
+        defaultProfile: restricted
+        allowed: ["restricted"]
 
   network:
     networkPlan: aks-standard
@@ -45,5 +45,3 @@ spec:
     - cidr: 0.0.0.0/0
       name: default
     aksServicesNetwork: 172.16.0.0/16
-
-    

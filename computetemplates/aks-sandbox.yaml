@@ -13,7 +13,7 @@ spec:
       maxSize: 2
       minSize: 1
     image: Linux
-    machine: Standard_D2s_v5
+    machine: Standard_B2ms
     maxPodsPerNode: 50
     logicalName: system
     size: 1

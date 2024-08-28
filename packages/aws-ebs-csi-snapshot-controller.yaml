@@ -6,6 +6,7 @@ metadata:
   annotations:
     appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "EBS CSI Snapshot Controller (AWS)"
+    appvia.io/packageProviderFilter: "EKS"
 spec:
   description: Provides snapshot support to EKS clusters using AWS EBS
   version: "2.2.2-1"
