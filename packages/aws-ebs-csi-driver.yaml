@@ -4,7 +4,6 @@ kind: Package
 metadata:
   name: aws-ebs-csi-driver
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "EBS CSI Storage Driver (AWS)"
 spec:
   description: Provides volumes to EKS clusters using AWS EBS

@@ -3,7 +3,6 @@ kind: Package
 metadata:
   name: ingress-nginx-internal
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Internal Ingress Nginx"
 spec:
   version: "4.10.1-2"

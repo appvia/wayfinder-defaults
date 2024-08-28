@@ -3,7 +3,6 @@ kind: Package
 metadata:
   name: external-dns-azure-private
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "External DNS for Azure (Private)"
 spec:
   version: "7.2.1-2"
