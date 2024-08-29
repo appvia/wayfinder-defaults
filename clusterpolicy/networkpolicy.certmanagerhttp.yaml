@@ -1,0 +1,111 @@
+apiVersion: policydelivery.appvia.io/v1alpha1
+kind: GlobalClusterPolicy
+metadata:
+  name: networkpolicy.certmanagerhttp
+spec:
+  # This policy adds a permit for traffic from the ingress controller to all HTTP01 cert-manager
+  # challenge pods to enable HTTP01 challenges to work without manual configuration.
+  # It also prevents any user-scheduled pods etc from using the acme.cert-manager.io/http01-solver
+  # label to circumvent the requirement to manage their own network policies.
+  policy:
+    kyverno:
+      validationFailureAction: enforce
+      background: false
+      rules:
+      - name: permit-certmanager-http01
+        match:
+          any:
+          - resources:
+              kinds:
+              - Namespace
+              selector:
+                matchLabels:
+                  appvia.io/namespaceType: app
+        generate:
+          apiVersion: networking.k8s.io/v1
+          kind: NetworkPolicy
+          name: permit-certmanager-http01
+          namespace: "{{request.object.metadata.name}}"
+          synchronize: true
+          data:
+            spec:
+              podSelector:
+                matchLabels:
+                  acme.cert-manager.io/http01-solver: "true"
+              ingress:
+                - from:
+                  - namespaceSelector:
+                      matchExpressions:
+                      - key: kubernetes.io/metadata.name
+                        operator: In
+                        values: [ingress, ingress-internal]
+                  ports:
+                    - protocol: TCP
+                      port: 8089
+      - name: deny-certmanager-labels-pods
+        match:
+          all:
+          - resources:
+              kinds:
+              - Pod
+              namespaceSelector:
+                matchLabels:
+                  appvia.io/namespaceType: app
+        preconditions:
+          all:
+          - key: "{{ request.object.metadata.labels.\"acme.cert-manager.io/http01-solver\" || '' }}"
+            operator: Equals
+            value: "true"
+        exclude:
+          any:
+          - subjects:
+            - kind: ServiceAccount
+              name: cert-manager
+              namespace: cert-manager
+        validate:
+          message: >-
+            Only cert-manager can create Pods with the label acme.cert-manager.io/http01-solver
+          deny:
+            conditions:
+              any:
+              - key: "{{request.operation}}"
+                operator: Equals
+                value: CREATE
+              - key: "{{request.operation}}"
+                operator: Equals
+                value: UPDATE
+      - name: deny-certmanager-labels-podtemplates
+        match:
+          all:
+          - resources:
+              kinds:
+              - Deployment
+              - StatefulSet
+              - ReplicaSet
+              namespaceSelector:
+                matchLabels:
+                  appvia.io/namespaceType: app
+        preconditions:
+          all:
+          - key: "{{ request.object.spec.template.metadata.labels.\"acme.cert-manager.io/http01-solver\" || '' }}"
+            operator: Equals
+            value: "true"
+        exclude:
+          any:
+          - subjects:
+            - kind: ServiceAccount
+              name: cert-manager
+              namespace: cert-manager
+        validate:
+          message: >-
+            Only cert-manager can create Pods with the label acme.cert-manager.io/http01-solver
+          deny:
+            conditions:
+              any:
+              - key: "{{request.operation}}"
+                operator: Equals
+                value: CREATE
+              - key: "{{request.operation}}"
+                operator: Equals
+                value: UPDATE
+    type: Kyverno

@@ -1,0 +1,28 @@
+apiVersion: package.appvia.io/v2beta2
+kind: Package
+metadata:
+  name: kyverno
+  annotations:
+    appvia.io/displayName: "Kyverno Policy"
+spec:
+  version: "2.7.3-5"
+  installNamespace: kyverno
+  description: kyverno in clusters
+
+  helm:
+    releaseName: kyverno
+    chartName: kyverno
+    repositoryRef: wayfinder-builtin
+    chartVersion: "2.7.3"
+    helmTimeout: 300s
+
+    valuesTemplate: |
+      priorityClassName: wf-system-critical
+      config:
+        webhooks:
+        - namespaceSelector:
+            matchExpressions:
+            - key: kubernetes.io/metadata.name
+              operator: NotIn
+              values:
+              - kube-system

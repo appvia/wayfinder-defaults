@@ -1,0 +1,74 @@
+apiVersion: package.appvia.io/v2beta2
+kind: Package
+metadata:
+  name: cluster-autoscaler
+  annotations:
+    appvia.io/displayName: "Cluster Autoscaler"
+spec:
+  version: "9.36.0-1"
+  installNamespace: kube-system
+  description: Enables the ability to scale nodepools based on demand
+
+  helm:
+    releaseName: cluster-autoscaler
+    repositoryRef: wayfinder-builtin
+    chartVersion: "9.36.0"
+    chartName: cluster-autoscaler
+    valuesTemplate: |
+      autoDiscovery:
+        clusterName: {{ .Cluster.AWS.Name }}
+      awsRegion: {{ .Cluster.Region }}
+      cloud-provider: aws
+      fullnameOverride: cluster-autoscaler
+      priorityClassName: system-cluster-critical
+      rbac:
+        create: true
+        serviceAccount:
+          name: {{ .Package.WorkloadIdentity.ServiceAccountName }}
+          annotations:
+      {{ .Package.WorkloadIdentity.ServiceAccountAnnotations | toYaml | indent 6 }}
+      securityContext:
+        fsGroup: 1001
+        runAsGroup: 1001
+        runAsNonRoot: true
+        runAsUser: 1001
+
+  workloadIdentity:
+    serviceAccountName: cluster-autoscaler
+    role:
+      aws:
+        customIAMPolicyTemplate: |
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Sid": "ClusterAutoscaler",
+                "Effect": "Allow",
+                "Action": [
+                  "autoscaling:DescribeAutoScalingGroups",
+                  "autoscaling:DescribeAutoScalingInstances",
+                  "autoscaling:DescribeInstances",
+                  "autoscaling:DescribeLaunchConfigurations",
+                  "autoscaling:DescribeTags",
+                  "autoscaling:SetDesiredCapacity",
+                  "autoscaling:TerminateInstanceInAutoScalingGroup",
+                  "ec2:DescribeLaunchTemplateVersions",
+                  "ec2:DescribeInstanceTypes",
+                  "eks:DescribeNodegroup"
+                ],
+                "Resource": "*"
+              },
+              {
+                "Sid": "ClusterAutoscalerTerminateInstance",
+                "Effect": "Allow",
+                "Action": [
+                  "autoscaling:SetDesiredCapacity",
+                  "autoscaling:TerminateInstanceInAutoScalingGroup"
+                ],
+                "Resource": "*",
+                "Condition": {
+                  "StringEquals": { "autoscaling:ResourceTag/k8s.io/cluster-autoscaler/{{ .Cluster.AWS.Name }}": "owned" }
+                }
+              }
+            ]
+          }

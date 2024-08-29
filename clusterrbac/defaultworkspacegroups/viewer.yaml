@@ -1,0 +1,6 @@
+apiVersion: org.appvia.io/v2beta1
+kind: DefaultWorkspaceGroup
+metadata:
+  name: viewer
+spec:
+  description: "View only access to all clusters in workspace"

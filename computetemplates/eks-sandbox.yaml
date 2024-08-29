@@ -1,0 +1,27 @@
+apiVersion: compute.appvia.io/v2beta2
+kind: ComputeTemplate
+metadata:
+  name: eks-sandbox
+spec:
+  description: Low cost EKS node pool for testing purposes utilising spot instances
+  provider: EKS
+
+  nodePools:
+  - logicalName: compute
+    description: Compute Nodepool using Spot Instances
+    diskSize: 30
+    image: AL2_x86_64
+    machine: t3.large
+    autoscaling:
+      enabled: true
+      maxSize: 10
+      minSize: 2
+    size: 2
+    spot:
+      eks:
+        additionalInstanceTypes:
+        - t3.xlarge
+        - m5.large
+        - m5.xlarge
+        - t3.2xlarge
+      enabled: true

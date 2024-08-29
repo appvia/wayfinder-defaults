@@ -1,0 +1,21 @@
+apiVersion: compute.appvia.io/v2beta2
+kind: ComputeTemplate
+metadata:
+  name: gke-sandbox
+spec:
+  description: Low cost cluster configuration for testing purposes
+  provider: GKE
+
+  nodePools:
+  - diskSize: 30
+    autoscaling:
+      enabled: true
+      maxSize: 3
+      minSize: 1
+    image: COS_CONTAINERD
+    machine: n2-standard-2
+    maxPodsPerNode: 110
+    logicalName: compute
+    size: 1
+    spot:
+      enabled: false

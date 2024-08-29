@@ -1,0 +1,19 @@
+apiVersion: compute.appvia.io/v2beta2
+kind: ComputeTemplate
+metadata:
+  name: gke-general-purpose
+spec:
+  description: General purpose AKS node pool
+  provider: GKE
+
+  nodePools:
+  - logicalName: compute
+    diskSize: 30
+    image: COS_CONTAINERD
+    machine: n2-standard-2
+    maxPodsPerNode: 110
+    size: 1
+    autoscaling:
+      enabled: true
+      maxSize: 10
+      minSize: 1

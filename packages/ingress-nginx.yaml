@@ -1,0 +1,79 @@
+apiVersion: package.appvia.io/v2beta2
+kind: Package
+metadata:
+  name: ingress-nginx
+  annotations:
+    appvia.io/displayName: "External Ingress Nginx"
+spec:
+  version: "4.10.1-1"
+  installNamespace: ingress
+  description: Enables the capability to provision ingress services
+
+  helm:
+    releaseName: ingress-nginx
+    chartName: ingress-nginx
+    repositoryRef: wayfinder-builtin
+    chartVersion: "4.10.1"
+    # time for a load balancer to be created
+    helmTimeout: 300s
+
+    valuesTemplate: |
+      controller:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                    - ingress
+                topologyKey: failure-domain.beta.kubernetes.io/zone
+              weight: 100
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                    - ingress
+                topologyKey: kubernetes.io/hostname
+              weight: 95
+        allowSnippetAnnotations: false
+        autoscaling:
+          enabled: false
+          maxReplicas: 6
+          minReplicas: 2
+          targetCPUUtilizationPercentage: 75
+          targetMemoryUtilizationPercentage: 70
+        ingressClass: external
+        ingressClassResource:
+          controllerValue: k8s.io/ingress-nginx
+          default: true
+          enabled: true
+          name: external
+        metrics:
+          enabled: true
+        replicaCount: 2
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1024Mi
+          requests:
+            cpu: 10m
+            memory: 32Mi
+        service:
+          annotations: null
+          externalTrafficPolicy: Local
+        updateStrategy:
+          rollingUpdate:
+            maxUnavailable: 1
+          type: RollingUpdate
+        admissionWebhooks:
+          enabled: true
+          networkPolicyEnabled: true
+      fullnameOverride: ingress
+      priorityClassName: system-cluster-critical
+      podSecurityPolicy:
+        enabled: false

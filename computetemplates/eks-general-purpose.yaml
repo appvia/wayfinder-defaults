@@ -1,0 +1,18 @@
+apiVersion: compute.appvia.io/v2beta2
+kind: ComputeTemplate
+metadata:
+  name: eks-general-purpose
+spec:
+  description: General purpose EKS node pool
+  provider: EKS
+
+  nodePools:
+  - logicalName: compute
+    diskSize: 30
+    image: AL2_x86_64
+    machine: t3.large
+    size: 2
+    autoscaling:
+      enabled: true
+      maxSize: 10
+      minSize: 2

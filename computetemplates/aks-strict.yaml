@@ -1,0 +1,39 @@
+apiVersion: compute.appvia.io/v2beta2
+kind: ComputeTemplate
+metadata:
+  name: aks-strict
+spec:
+  description: Separate system and user node pools for hardened configuration
+  provider: AKS
+
+  nodePools:
+  - diskSize: 60
+    autoscaling:
+      enabled: true
+      maxSize: 10
+      minSize: 2
+    image: Linux
+    machine: Standard_D2s_v5
+    maxPodsPerNode: 50
+    logicalName: system
+    size: 2
+    providerDetails:
+      aks:
+        mode: system
+    taints:
+    - effect: NoSchedule
+      key: CriticalAddonsOnly
+      value: "true"
+  - diskSize: 30
+    autoscaling:
+      enabled: true
+      maxSize: 10
+      minSize: 1
+    image: Linux
+    machine: Standard_D2s_v5
+    maxPodsPerNode: 110
+    logicalName: compute
+    size: 1
+    providerDetails:
+      aks:
+        mode: user

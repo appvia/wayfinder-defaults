@@ -1,0 +1,106 @@
+apiVersion: package.appvia.io/v2beta2
+kind: Package
+metadata:
+  name: terranetes-controller
+  annotations:
+    appvia.io/displayName: "Terranetes Controller"
+spec:
+  version: "0.7.12-1"
+  installNamespace: terraform-system
+  description: Enables the capability to provision cloud resources
+
+  helm:
+    releaseName: terranetes-controller
+    chartName: terranetes-controller
+    repositoryRef: wayfinder-builtin
+    chartVersion: "0.7.12"
+    helmTimeout: 300s
+  
+    valuesTemplate: |
+      fullnameOverride: terranetes-controller
+      rbac:
+        executor:
+          annotations: {}
+          create: true
+      providers:
+      - name: default
+      {{- if .Cluster.AWS }}
+        provider: aws
+      {{- end }}
+      {{- if .Cluster.Azure }}
+        provider: azurerm
+        job:
+          labels:
+      {{ .Package.WorkloadIdentity.PodLabels | toYaml | indent 6 }}
+        configuration:
+          use_oidc: true
+          subscription_id: {{ .CloudAccessConfig.Azure.Subscription }}
+          tenant_id: {{ .CloudAccessConfig.Azure.Tenant }}
+          client_id: {{ index .Package.WorkloadIdentity.ServiceAccountAnnotations "azure.workload.identity/client-id" }}
+          oidc_token_file_path: /var/run/secrets/azure/tokens/azure-identity-token
+      {{- end }}
+        serviceAccount: {{ .Package.WorkloadIdentity.ServiceAccountName }}
+        annotations:
+      {{ .Package.WorkloadIdentity.ServiceAccountAnnotations | toYaml | indent 4 }}
+        source: injected
+      policies:
+      - name: permitted-modules
+        labels: {}
+        annotations: {}
+        constraint:
+          modules:
+            allowed:
+            - "https://github.com/.*"
+      - name: checkov-exclusions
+        labels: {}
+        annotations: {}
+        constraint:
+          checkov:
+            skipChecks: [
+      {{- if .Cluster.AWS }}
+              "CKV_AWS_18",
+              "CKV_AWS_19",
+              "CKV_AWS_21",
+              "CKV_AWS_40",
+              "CKV_AWS_53",
+              "CKV_AWS_54",
+              "CKV_AWS_55",
+              "CKV_AWS_56",
+              "CKV_AWS_144",
+              "CKV_AWS_145",
+              "CKV_AWS_273",
+              "CKV2_AWS_6"
+      {{- end }}
+      {{- if .Cluster.Azure }}
+              "CKV_AZURE_33",
+              "CKV_AZURE_35",
+              "CKV_AZURE_36",
+              "CKV_AZURE_59",
+              "CKV_AZURE_206",
+              "CKV2_AZURE_1",
+              "CKV2_AZURE_18",
+              "CKV2_AZURE_21",
+              "CKV2_AZURE_33"
+      {{- end }}
+            ]
+
+  workloadIdentity:
+    serviceAccountName: terranetes-executor
+    role:
+      aws:
+        customIAMPolicyTemplate: |
+          {
+              "Version": "2012-10-17",
+              "Statement": [
+                  {
+                      "Sid": "TerranetesController",
+                      "Effect": "Allow",
+                      "Action": "*",
+                      "Resource": "*"
+                  }
+              ]
+          }
+      azure:
+        roleAssignmentsTemplate: |
+          - scope: /subscriptions/{{ .CloudAccessConfig.Azure.Subscription }}
+            roleDefinitionName: Owner
