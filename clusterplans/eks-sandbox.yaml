@@ -4,7 +4,7 @@ metadata:
   name: eks-sandbox
 spec:
   description: Low cost cluster configuration for testing purposes
-  version: "1.0.1"
+  version: "1.0.2"
   provider: EKS
 
   scope:
@@ -33,7 +33,7 @@ spec:
     - name: kyverno
       version: "2.7.3-5"
     - name: terranetes-controller
-      version: "0.7.12-1"
+      version: "0.7.12-2"
 
     security:
       podSecurityStandard:

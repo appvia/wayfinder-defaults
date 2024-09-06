@@ -5,7 +5,7 @@ metadata:
   annotations:
     appvia.io/displayName: "Terranetes Controller"
 spec:
-  version: "0.7.12-1"
+  version: "0.7.12-2"
   installNamespace: terraform-system
   description: Enables the capability to provision cloud resources
 
@@ -20,12 +20,17 @@ spec:
       fullnameOverride: terranetes-controller
       rbac:
         executor:
-          annotations: {}
+          {{ .Package.WorkloadIdentity.ServiceAccountAnnotations | toYaml | indent 6 }}
           create: true
       providers:
       - name: default
       {{- if .Cluster.AWS }}
         provider: aws
+        preload:
+          cluster: {{ .Cluster.AWS.Name }}
+          context: default
+          enabled: true
+          region: {{ .Cluster.Region }}
       {{- end }}
       {{- if .Cluster.Azure }}
         provider: azurerm
