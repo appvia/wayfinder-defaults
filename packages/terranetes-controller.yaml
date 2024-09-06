@@ -5,7 +5,7 @@ metadata:
   annotations:
     appvia.io/displayName: "Terranetes Controller"
 spec:
-  version: "0.7.12-2"
+  version: "0.7.18-1"
   installNamespace: terraform-system
   description: Enables the capability to provision cloud resources
 
@@ -13,14 +13,15 @@ spec:
     releaseName: terranetes-controller
     chartName: terranetes-controller
     repositoryRef: wayfinder-builtin
-    chartVersion: "0.7.12"
+    chartVersion: "0.7.18"
     helmTimeout: 300s
   
     valuesTemplate: |
       fullnameOverride: terranetes-controller
       rbac:
         executor:
-          {{ .Package.WorkloadIdentity.ServiceAccountAnnotations | toYaml | indent 6 }}
+          annotations:
+            {{ .Package.WorkloadIdentity.ServiceAccountAnnotations | toYaml | indent 6 }}
           create: true
       providers:
       - name: default
