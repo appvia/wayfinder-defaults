@@ -4,7 +4,7 @@ metadata:
   name: gke-general-purpose
 spec:
   description: General purpose GKE cluster
-  version: "1.0.1"
+  version: "1.0.2"
   provider: GKE
 
   scope:
@@ -15,7 +15,7 @@ spec:
     kubernetesVersion: "1.29"
     packages:
     - name: ingress-nginx
-      version: "4.10.1-1"
+      version: "4.10.1-2"
     - name: cert-manager
       version: "1.14.5-1"
     - name: external-dns

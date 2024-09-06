@@ -15,7 +15,7 @@ spec:
     kubernetesVersion: "1.29"
     packages:
     - name: ingress-nginx-internal
-      version: "4.10.1-2"
+      version: "4.10.1-3"
     - name: cert-manager
       version: "1.14.5-1"
     - name: external-dns-azure-private
