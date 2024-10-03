@@ -4,15 +4,16 @@ kind: Package
 metadata:
   name: aws-ebs-csi-snapshot-controller
   annotations:
+    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "EBS CSI Snapshot Controller (AWS)"
     appvia.io/packageProviderFilter: "EKS"
 spec:
   description: Provides snapshot support to EKS clusters using AWS EBS
-  version: "2.2.2-1"
+  version: "3.0.6-1"
   installNamespace: snapshot-controller
 
   helm:
     releaseName: snapshot-controller
     repositoryRef: wayfinder-builtin
     chartName: snapshot-controller
-    chartVersion: "2.2.2"
+    chartVersion: "3.0.6"

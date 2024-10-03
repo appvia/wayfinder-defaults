@@ -3,9 +3,10 @@ kind: Package
 metadata:
   name: external-dns-azure-private
   annotations:
+    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "External DNS for Azure (Private)"
 spec:
-  version: "7.2.1-2"
+  version: "8.3.8-1"
   installNamespace: external-dns-private
   description: External DNS for Azure allows Kubernetes to manage DNS zones on Azure Private DNS
 
@@ -14,7 +15,7 @@ spec:
     helmTimeout: 300s
     repositoryRef: wayfinder-builtin
     chartName: external-dns
-    chartVersion: "7.2.1"
+    chartVersion: "8.3.8"
     valuesTemplate: |
       domainFilters:
       {{- range .Cluster.DNSZones }}

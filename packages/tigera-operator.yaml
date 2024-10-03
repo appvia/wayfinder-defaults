@@ -3,10 +3,11 @@ kind: Package
 metadata:
   name: tigera-operator
   annotations:
+    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Tigera operator"
     appvia.io/packageProviderFilter: "EKS"
 spec:
-  version: "3.27.3-1"
+  version: "3.28.2-0"
   installNamespace: kube-system
   description: Enables the ability to create policies around network traffic
 
@@ -14,7 +15,12 @@ spec:
     releaseName: tigera-operator
     chartName: tigera-operator
     repositoryRef: wayfinder-builtin
-    chartVersion: "v3.27.3"
+    chartVersion: "v3.28.2"
     valuesTemplate: |
       installation:
         kubernetesProvider: EKS
+        registry: quay.io
+      tigeraOperator:
+        registry: quay.io
+      calicoctl:
+        image: quay.io/calico/ctl
