@@ -3,9 +3,10 @@ kind: Package
 metadata:
   name: ingress-nginx-internal
   annotations:
+    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Internal Ingress Nginx"
 spec:
-  version: "4.10.1-2"
+  version: "4.11.2-1"
   installNamespace: ingress-internal
   description: Enables the capability to provision internal ingress services
 
@@ -13,7 +14,7 @@ spec:
     releaseName: ingress-nginx-internal
     chartName: ingress-nginx
     repositoryRef: wayfinder-builtin
-    chartVersion: "4.10.1"
+    chartVersion: "4.11.2"
     # time for a load balancer to be created
     helmTimeout: 300s
 
@@ -47,8 +48,7 @@ spec:
           minReplicas: 2
           targetCPUUtilizationPercentage: 75
           targetMemoryUtilizationPercentage: 70
-        extraArgs:
-          ingress-class: internal
+        ingressClass: internal
         ingressClassResource:
           controllerValue: k8s.io/ingress-nginx-internal
           default: false
@@ -59,7 +59,6 @@ spec:
         replicaCount: 2
         resources:
           limits:
-            cpu: 1000m
             memory: 1024Mi
           requests:
             cpu: 10m

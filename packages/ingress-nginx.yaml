@@ -3,9 +3,10 @@ kind: Package
 metadata:
   name: ingress-nginx
   annotations:
+    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "External Ingress Nginx"
 spec:
-  version: "4.10.1-1"
+  version: "4.11.2-1"
   installNamespace: ingress
   description: Enables the capability to provision ingress services
 
@@ -13,7 +14,7 @@ spec:
     releaseName: ingress-nginx
     chartName: ingress-nginx
     repositoryRef: wayfinder-builtin
-    chartVersion: "4.10.1"
+    chartVersion: "4.11.2"
     # time for a load balancer to be created
     helmTimeout: 300s
 
@@ -58,7 +59,6 @@ spec:
         replicaCount: 2
         resources:
           limits:
-            cpu: 1000m
             memory: 1024Mi
           requests:
             cpu: 10m

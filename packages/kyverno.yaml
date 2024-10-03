@@ -3,6 +3,7 @@ kind: Package
 metadata:
   name: kyverno
   annotations:
+    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Kyverno Policy"
 spec:
   version: "2.7.3-5"

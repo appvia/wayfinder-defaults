@@ -3,10 +3,11 @@ kind: Package
 metadata:
   name: cert-manager
   annotations:
+    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Cert Manager"
 spec:
   description: Provides the capability to self-serve certificates
-  version: "1.14.5-1"
+  version: "1.15.3-1"
   installNamespace: cert-manager
 
   helm:
@@ -14,7 +15,7 @@ spec:
     releaseName: cert-manager
     repositoryRef: wayfinder-builtin
     chartName: cert-manager
-    chartVersion: "1.14.5"
+    chartVersion: "1.15.3"
     valuesTemplate: |
       cainjector:
         enabled: true

@@ -4,10 +4,11 @@ kind: Package
 metadata:
   name: aws-ebs-csi-driver
   annotations:
+    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "EBS CSI Storage Driver (AWS)"
 spec:
   description: Provides volumes to EKS clusters using AWS EBS
-  version: "2.30.0-1"
+  version: "2.35.1-1"
   installNamespace: kube-system
   dependencies:
   - aws-ebs-csi-snapshot-controller
@@ -16,7 +17,7 @@ spec:
     repositoryRef: wayfinder-builtin
     releaseName: aws-ebs-csi-driver
     chartName: aws-ebs-csi-driver
-    chartVersion: "2.30.0"
+    chartVersion: "2.35.1"
     valuesTemplate: |
       controller:
         serviceAccount:
