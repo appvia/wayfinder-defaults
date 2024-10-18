@@ -17,15 +17,15 @@ spec:
     kubernetesVersion: "1.30"
     packages:
     - name: ingress-nginx-internal
-      version: "4.11.2-1"
+      version: "4.11.3-1"
     - name: cert-manager
-      version: "1.15.3-1"
+      version: "1.15.3-2"
     - name: external-dns-azure-private
-      version: "8.3.8-1"
+      version: "8.3.9-1"
     - name: kyverno
-      version: "2.7.3-5"
+      version: "2.7.3-6"
     - name: terranetes-controller
-      version: "0.7.20-2"
+      version: "0.7.21-1"
 
     providerDetails:
       aks:

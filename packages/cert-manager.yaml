@@ -1,25 +1,24 @@
+---
 apiVersion: package.appvia.io/v2beta2
 kind: Package
 metadata:
   name: cert-manager
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Cert Manager"
 spec:
   description: Provides the capability to self-serve certificates
-  version: "1.15.3-1"
+  version: "1.15.3-2"
   installNamespace: cert-manager
 
   helm:
     helmTimeout: 30s
     releaseName: cert-manager
-    repositoryRef: wayfinder-builtin
+    repositoryRef: jetstack
     chartName: cert-manager
     chartVersion: "1.15.3"
     valuesTemplate: |
-      cainjector:
+      crds:
         enabled: true
-        replicaCount: 1
       extraArgs:
       - --dns01-recursive-nameservers-only=true
       fullnameOverride: cert-manager
@@ -29,11 +28,8 @@ spec:
           useAppArmor: false
       ingressShim:
         defaultIssuerKind: ClusterIssuer
-      installCRDs: true
-      replicaCount: 1
       resources:
         limits:
-          cpu: 30m
           memory: 512Mi
         requests:
           cpu: 10m

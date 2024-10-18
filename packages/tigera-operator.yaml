@@ -1,20 +1,20 @@
+---
 apiVersion: package.appvia.io/v2beta2
 kind: Package
 metadata:
   name: tigera-operator
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Tigera operator"
     appvia.io/packageProviderFilter: "EKS"
 spec:
-  version: "3.28.2-0"
+  version: "3.28.2-1"
   installNamespace: kube-system
   description: Enables the ability to create policies around network traffic
 
   helm:
     releaseName: tigera-operator
     chartName: tigera-operator
-    repositoryRef: wayfinder-builtin
+    repositoryRef: projectcalico
     chartVersion: "v3.28.2"
     valuesTemplate: |
       installation:

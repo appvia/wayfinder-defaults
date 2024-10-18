@@ -20,22 +20,24 @@ spec:
       version: "3.0.6-1"
     - name: aws-ebs-csi-driver
       version: "2.35.1-1"
+    - name: aws-load-balancer-controller
+      version: "1.9.0-1"
     - name: tigera-operator
-      version: "3.28.2-0"
+      version: "3.28.2-1"
     - name: metrics-server
-      version: "3.12.1-1"
+      version: "3.12.1-2"
     - name: cluster-autoscaler
-      version: "9.37.0-1"
+      version: "9.43.0-1"
     - name: ingress-nginx
-      version: "4.11.2-1"
+      version: "4.11.3-1"
     - name: cert-manager
-      version: "1.15.3-1"
+      version: "1.15.3-2"
     - name: external-dns
-      version: "8.3.8-1"
+      version: "8.3.9-1"
     - name: kyverno
-      version: "2.7.3-5"
+      version: "2.7.3-6"
     - name: terranetes-controller
-      version: "0.7.20-2"
+      version: "0.7.21-1"
 
     security:
       podSecurityStandard:

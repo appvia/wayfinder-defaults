@@ -1,20 +1,20 @@
+---
 apiVersion: package.appvia.io/v2beta2
 kind: Package
 metadata:
   name: metrics-server
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Metrics Server"
 spec:
   description: Gathers prometheus metrics from the nodes for use with scaling policies
   installNamespace: kube-system
-  version: "3.12.1-1"
+  version: "3.12.1-2"
   dependencies:
-  - tigera-operator
+    - tigera-operator
 
   helm:
     releaseName: metrics-server
-    repositoryRef: wayfinder-builtin
+    repositoryRef: metrics-server
     chartName: metrics-server
     chartVersion: "3.12.1"
     helmTimeout: 300s

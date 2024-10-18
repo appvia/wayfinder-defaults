@@ -1,12 +1,12 @@
+---
 apiVersion: package.appvia.io/v2beta2
 kind: Package
 metadata:
   name: terranetes-controller
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Terranetes Controller"
 spec:
-  version: "0.7.20-2"
+  version: "0.7.21-1"
   installNamespace: terraform-system
   description: Enables the capability to provision cloud resources
 
@@ -14,10 +14,13 @@ spec:
     releaseName: terranetes-controller
     chartName: terranetes-controller
     repositoryRef: wayfinder-builtin
-    chartVersion: "0.7.20"
+    chartVersion: "0.7.21"
     helmTimeout: 300s
-  
+
     valuesTemplate: |
+      controller:
+        enableHelmWebhookRegistration: true
+        enableControllerWebhookRegistration: false
       fullnameOverride: terranetes-controller
       rbac:
         executor:

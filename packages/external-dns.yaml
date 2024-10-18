@@ -1,21 +1,21 @@
+---
 apiVersion: package.appvia.io/v2beta2
 kind: Package
 metadata:
   name: external-dns
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "External DNS"
 spec:
   description: External DNS allows Kubernetes to manage DNS zones
-  version: "8.3.8-1"
+  version: "8.3.9-1"
   installNamespace: external-dns
 
   helm:
     releaseName: external-dns
     helmTimeout: 300s
-    repositoryRef: wayfinder-builtin
+    repositoryRef: bitnami
     chartName: external-dns
-    chartVersion: "8.3.8"
+    chartVersion: "8.3.9"
     valuesTemplate: |
       domainFilters:
       {{- range .Cluster.DNSZones }}
@@ -36,7 +36,6 @@ spec:
         apiVersion: v1
       resources:
         limits:
-          cpu: 20m
           memory: 50Mi
         requests:
           cpu: 10m

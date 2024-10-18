@@ -4,17 +4,16 @@ kind: Package
 metadata:
   name: aws-ebs-csi-driver
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "EBS CSI Storage Driver (AWS)"
 spec:
   description: Provides volumes to EKS clusters using AWS EBS
   version: "2.35.1-1"
   installNamespace: kube-system
   dependencies:
-  - aws-ebs-csi-snapshot-controller
+    - aws-ebs-csi-snapshot-controller
 
   helm:
-    repositoryRef: wayfinder-builtin
+    repositoryRef: aws-ebs-csi-driver
     releaseName: aws-ebs-csi-driver
     chartName: aws-ebs-csi-driver
     chartVersion: "2.35.1"
@@ -28,28 +27,28 @@ spec:
     skipTests: true
 
   manifests:
-  - template: |
-      apiVersion: storage.k8s.io/v1
-      kind: StorageClass
-      metadata:
-        annotations:
-          ### Make the default encrypted storage class
-          storageclass.kubernetes.io/is-default-class: "true"
-        name: gp3
-      parameters:
-        type: gp3
-        encrypted: "true"
-      provisioner: kubernetes.io/aws-ebs
-      reclaimPolicy: Delete
-      volumeBindingMode: WaitForFirstConsumer
-      allowVolumeExpansion: true
+    - template: |
+        apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+          annotations:
+            ### Make the default encrypted storage class
+            storageclass.kubernetes.io/is-default-class: "true"
+          name: gp3
+        parameters:
+          type: gp3
+          encrypted: "true"
+        provisioner: kubernetes.io/aws-ebs
+        reclaimPolicy: Delete
+        volumeBindingMode: WaitForFirstConsumer
+        allowVolumeExpansion: true
 
   workloadIdentity:
     serviceAccountName: ebs-csi-controller-sa
     role:
       aws:
         iamPolicyARNs:
-        - arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
+          - arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
         customIAMPolicyTemplate: |
           {
             "Version": "2012-10-17",

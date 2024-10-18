@@ -1,27 +1,26 @@
+---
 apiVersion: package.appvia.io/v2beta2
 kind: Package
 metadata:
   name: cluster-autoscaler
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Cluster Autoscaler"
 spec:
-  version: "9.37.0-1"
+  version: "9.43.0-1"
   installNamespace: kube-system
   description: Enables the ability to scale nodepools based on demand
 
   helm:
     releaseName: cluster-autoscaler
-    repositoryRef: wayfinder-builtin
-    chartVersion: "9.37.0"
+    repositoryRef: autoscaler
+    chartVersion: "9.43.0"
     chartName: cluster-autoscaler
     valuesTemplate: |
       autoDiscovery:
         clusterName: {{ .Cluster.AWS.Name }}
       awsRegion: {{ .Cluster.Region }}
-      cloud-provider: aws
+      cloudProvider: aws
       fullnameOverride: cluster-autoscaler
-      priorityClassName: system-cluster-critical
       rbac:
         create: true
         serviceAccount:
@@ -50,11 +49,14 @@ spec:
                   "autoscaling:DescribeAutoScalingInstances",
                   "autoscaling:DescribeInstances",
                   "autoscaling:DescribeLaunchConfigurations",
+                  "autoscaling:DescribeScalingActivities",
                   "autoscaling:DescribeTags",
                   "autoscaling:SetDesiredCapacity",
                   "autoscaling:TerminateInstanceInAutoScalingGroup",
                   "ec2:DescribeLaunchTemplateVersions",
+                  "ec2:DescribeImages",
                   "ec2:DescribeInstanceTypes",
+                  "ec2:GetInstanceTypesFromInstanceRequirements",
                   "eks:DescribeNodegroup"
                 ],
                 "Resource": "*"
