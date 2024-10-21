@@ -76,6 +76,8 @@ spec:
             service.beta.kubernetes.io/aws-load-balancer-type: "external"
             service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
             service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+          {{- else }}
+          externalTrafficPolicy: Local
           {{- end }}
         updateStrategy:
           rollingUpdate:

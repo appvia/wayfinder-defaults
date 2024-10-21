@@ -81,6 +81,9 @@ spec:
             {{- else if .Cluster.GCP }}
             networking.gke.io/load-balancer-type: "Internal"
             {{- end }}
+          {{- if not .Cluster.AWS }}
+          externalTrafficPolicy: Local
+          {{- end }}
         updateStrategy:
           rollingUpdate:
             maxUnavailable: 1
