@@ -1,0 +1,9 @@
+---
+apiVersion: package.appvia.io/v2beta2
+kind: Repository
+metadata:
+  name: eks-charts
+spec:
+  url: https://aws.github.io/eks-charts
+  description: |
+    A collection of EKS Charts including the AWS Load Balancer Controller

@@ -1,0 +1,9 @@
+---
+apiVersion: package.appvia.io/v2beta2
+kind: Repository
+metadata:
+  name: autoscaler
+spec:
+  url: https://kubernetes.github.io/autoscaler
+  description: |
+    The official Helm repository for the Kubernetes Autoscaler project

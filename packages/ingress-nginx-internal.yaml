@@ -1,3 +1,4 @@
+---
 apiVersion: package.appvia.io/v2beta2
 kind: Package
 metadata:
@@ -5,15 +6,15 @@ metadata:
   annotations:
     appvia.io/displayName: "Internal Ingress Nginx"
 spec:
-  version: "4.10.1-2"
+  version: "4.11.3-1"
   installNamespace: ingress-internal
   description: Enables the capability to provision internal ingress services
 
   helm:
     releaseName: ingress-nginx-internal
     chartName: ingress-nginx
-    repositoryRef: wayfinder-builtin
-    chartVersion: "4.10.1"
+    repositoryRef: ingress-nginx
+    chartVersion: "4.11.3"
     # time for a load balancer to be created
     helmTimeout: 300s
 
@@ -47,8 +48,11 @@ spec:
           minReplicas: 2
           targetCPUUtilizationPercentage: 75
           targetMemoryUtilizationPercentage: 70
-        extraArgs:
-          ingress-class: internal
+        {{- if .Cluster.AWS }}
+        config:
+          use-proxy-protocol: "true"
+        {{- end }}
+        ingressClass: internal
         ingressClassResource:
           controllerValue: k8s.io/ingress-nginx-internal
           default: false
@@ -56,20 +60,30 @@ spec:
           name: internal
         metrics:
           enabled: true
+        networkPolicy:
+          enabled: true
         replicaCount: 2
         resources:
           limits:
-            cpu: 1000m
             memory: 1024Mi
           requests:
-            cpu: 10m
-            memory: 32Mi
+            cpu: 100m
+            memory: 100Mi
         service:
           annotations:
-            service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+            {{- if .Cluster.AWS }}
+            service.beta.kubernetes.io/aws-load-balancer-scheme: "internal"
+            service.beta.kubernetes.io/aws-load-balancer-type: "external"
+            service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
+            service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+            {{- else if .Cluster.Azure }}
             service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+            {{- else if .Cluster.GCP }}
             networking.gke.io/load-balancer-type: "Internal"
+            {{- end }}
+          {{- if not .Cluster.AWS }}
           externalTrafficPolicy: Local
+          {{- end }}
         updateStrategy:
           rollingUpdate:
             maxUnavailable: 1

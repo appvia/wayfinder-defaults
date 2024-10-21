@@ -1,0 +1,9 @@
+---
+apiVersion: package.appvia.io/v2beta2
+kind: Repository
+metadata:
+  name: piraeus-charts
+spec:
+  url: https://piraeus.io/helm-charts/
+  description: |
+    Contains a chart for the EBS CSI Snapshot Controller
