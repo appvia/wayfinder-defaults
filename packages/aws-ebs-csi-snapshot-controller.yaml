@@ -8,11 +8,11 @@ metadata:
     appvia.io/packageProviderFilter: "EKS"
 spec:
   description: Provides snapshot support to EKS clusters using AWS EBS
-  version: "2.2.2-1"
+  version: "3.0.6-1"
   installNamespace: snapshot-controller
 
   helm:
     releaseName: snapshot-controller
-    repositoryRef: wayfinder-builtin
+    repositoryRef: piraeus-charts
     chartName: snapshot-controller
-    chartVersion: "2.2.2"
+    chartVersion: "3.0.6"

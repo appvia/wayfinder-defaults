@@ -1,3 +1,4 @@
+---
 apiVersion: package.appvia.io/v2beta2
 kind: Package
 metadata:
@@ -5,15 +6,15 @@ metadata:
   annotations:
     appvia.io/displayName: "External Ingress Nginx"
 spec:
-  version: "4.10.1-1"
+  version: "4.11.3-1"
   installNamespace: ingress
   description: Enables the capability to provision ingress services
 
   helm:
     releaseName: ingress-nginx
     chartName: ingress-nginx
-    repositoryRef: wayfinder-builtin
-    chartVersion: "4.10.1"
+    repositoryRef: ingress-nginx
+    chartVersion: "4.11.3"
     # time for a load balancer to be created
     helmTimeout: 300s
 
@@ -47,6 +48,10 @@ spec:
           minReplicas: 2
           targetCPUUtilizationPercentage: 75
           targetMemoryUtilizationPercentage: 70
+        {{- if .Cluster.AWS }}
+        config:
+          use-proxy-protocol: "true"
+        {{- end }}
         ingressClass: external
         ingressClassResource:
           controllerValue: k8s.io/ingress-nginx
@@ -55,17 +60,25 @@ spec:
           name: external
         metrics:
           enabled: true
+        networkPolicy:
+          enabled: true
         replicaCount: 2
         resources:
           limits:
-            cpu: 1000m
             memory: 1024Mi
           requests:
-            cpu: 10m
-            memory: 32Mi
+            cpu: 100m
+            memory: 100Mi
         service:
-          annotations: null
+          {{- if .Cluster.AWS }}
+          annotations:
+            service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+            service.beta.kubernetes.io/aws-load-balancer-type: "external"
+            service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
+            service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+          {{- else }}
           externalTrafficPolicy: Local
+          {{- end }}
         updateStrategy:
           rollingUpdate:
             maxUnavailable: 1

@@ -1,3 +1,4 @@
+---
 apiVersion: package.appvia.io/v2beta2
 kind: Package
 metadata:
@@ -5,7 +6,7 @@ metadata:
   annotations:
     appvia.io/displayName: "Terranetes Controller"
 spec:
-  version: "0.7.12-1"
+  version: "0.7.21-1"
   installNamespace: terraform-system
   description: Enables the capability to provision cloud resources
 
@@ -13,19 +14,28 @@ spec:
     releaseName: terranetes-controller
     chartName: terranetes-controller
     repositoryRef: wayfinder-builtin
-    chartVersion: "0.7.12"
+    chartVersion: "0.7.21"
     helmTimeout: 300s
-  
+
     valuesTemplate: |
+      controller:
+        enableHelmWebhookRegistration: true
+        enableControllerWebhookRegistration: false
       fullnameOverride: terranetes-controller
       rbac:
         executor:
-          annotations: {}
+          annotations:
+      {{ .Package.WorkloadIdentity.ServiceAccountAnnotations | toYaml | indent 6 }}
           create: true
       providers:
       - name: default
       {{- if .Cluster.AWS }}
         provider: aws
+        preload:
+          cluster: {{ .Cluster.AWS.Name }}
+          context: default
+          enabled: true
+          region: {{ .Cluster.Region }}
       {{- end }}
       {{- if .Cluster.Azure }}
         provider: azurerm

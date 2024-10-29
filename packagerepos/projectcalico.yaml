@@ -1,0 +1,9 @@
+---
+apiVersion: package.appvia.io/v2beta2
+kind: Repository
+metadata:
+  name: projectcalico
+spec:
+  url: https://projectcalico.docs.tigera.io/charts
+  description: |
+    A collection of charts for Project Calico
