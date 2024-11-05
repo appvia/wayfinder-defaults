@@ -1,0 +1,33 @@
+---
+apiVersion: package.appvia.io/v2beta2
+kind: Package
+metadata:
+  name: aws-vpc-flow-logs
+  annotations:
+    appvia.io/createdBy: "Wayfinder"
+    appvia.io/displayName: "AWS VPC flow logs"
+spec:
+  description: Enables flow logging to cloudwatch on a vpc
+  version: "0.0.1"
+  installNamespace: vpc-flow-logs
+  dependencies:
+    - terranetes-controller
+
+  manifests:
+    - template: |
+        apiVersion: terraform.appvia.io/v1alpha1
+        kind: Configuration
+        metadata:
+          name: vpc-flow-logs
+          namespace: vpc-flow-logs
+        spec:
+          module: https://github.com/appvia/terraform-aws-vpc-flow-logs.git?ref=v0.0.1
+
+          enableAutoApproval: true
+
+          providerRef:
+            name: default
+
+          variables:
+            vpc_id: {{ .Cluster.Network.AWS.VPCID }}
+            name: {{ .Workspace.Key }}-{{ .Cluster.Name }}-logs
