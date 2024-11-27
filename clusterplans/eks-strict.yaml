@@ -6,7 +6,7 @@ metadata:
     appvia.io/published: "true"
 spec:
   description: Hardened EKS cluster with a restricted PSS Policy and no public ingress controller
-  version: "1.1.0"
+  version: "1.2.0"
   provider: EKS
 
   scope:
@@ -49,6 +49,8 @@ spec:
           scheduler: true
         encryption:
           secretsEncryptionEnabled: true
+        generateLaunchTemplate: true
+        imdsV2Required: true
 
     security:
       podSecurityStandard:

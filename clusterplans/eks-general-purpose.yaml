@@ -6,7 +6,7 @@ metadata:
     appvia.io/published: "true"
 spec:
   description: General purpose EKS cluster
-  version: "1.1.0"
+  version: "1.2.0"
   provider: EKS
 
   scope:
@@ -43,6 +43,8 @@ spec:
       eks:
         cloudWatchLogging:
           audit: true
+        generateLaunchTemplate: true
+        imdsV2Required: true
 
     security:
       podSecurityStandard:
