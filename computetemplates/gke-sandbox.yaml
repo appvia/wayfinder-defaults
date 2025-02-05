@@ -18,4 +18,4 @@ spec:
     logicalName: compute
     size: 1
     spot:
-      enabled: false
+      enabled: false # Enable this when we move from Preemptible to Spot VMs (WF-1993)

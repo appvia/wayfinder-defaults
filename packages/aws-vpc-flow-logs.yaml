@@ -4,7 +4,6 @@ kind: Package
 metadata:
   name: aws-vpc-flow-logs
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "AWS VPC flow logs"
 spec:
   description: Enables flow logging to cloudwatch on a vpc

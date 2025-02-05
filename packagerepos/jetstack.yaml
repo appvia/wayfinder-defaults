@@ -2,6 +2,7 @@
 apiVersion: package.appvia.io/v2beta2
 kind: Repository
 metadata:
+
   name: jetstack
 spec:
   url: https://charts.jetstack.io
