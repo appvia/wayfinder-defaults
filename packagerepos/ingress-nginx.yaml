@@ -2,8 +2,7 @@
 apiVersion: package.appvia.io/v2beta2
 kind: Repository
 metadata:
-  annotations:
-    appvia.io/createdBy: "Wayfinder"
+
   name: ingress-nginx
 spec:
   url: https://kubernetes.github.io/ingress-nginx

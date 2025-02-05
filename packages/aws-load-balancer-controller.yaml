@@ -4,7 +4,6 @@ kind: Package
 metadata:
   name: aws-load-balancer-controller
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Load Balancer Controller (AWS)"
 spec:
   description: Load Balancer Controller for AWS

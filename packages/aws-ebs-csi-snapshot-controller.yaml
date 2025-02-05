@@ -4,7 +4,6 @@ kind: Package
 metadata:
   name: aws-ebs-csi-snapshot-controller
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "EBS CSI Snapshot Controller (AWS)"
     appvia.io/packageProviderFilter: "EKS"
 spec:

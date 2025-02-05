@@ -4,7 +4,6 @@ kind: Package
 metadata:
   name: external-dns
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "External DNS"
 spec:
   description: External DNS allows Kubernetes to manage DNS zones

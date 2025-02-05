@@ -10,7 +10,7 @@ spec:
   - diskSize: 30
     autoscaling:
       enabled: true
-      maxSize: 10
+      maxSize: 3
       minSize: 1
     image: COS_CONTAINERD
     machine: n2-standard-2

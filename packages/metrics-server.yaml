@@ -4,7 +4,6 @@ kind: Package
 metadata:
   name: metrics-server
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Metrics Server"
 spec:
   description: Gathers prometheus metrics from the nodes for use with scaling policies

@@ -4,7 +4,6 @@ kind: Package
 metadata:
   name: cluster-autoscaler
   annotations:
-    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Cluster Autoscaler"
 spec:
   version: "9.43.0-1"
