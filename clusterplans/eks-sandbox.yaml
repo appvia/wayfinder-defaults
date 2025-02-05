@@ -6,7 +6,7 @@ metadata:
     appvia.io/published: "true"
 spec:
   description: Low cost cluster configuration for testing purposes
-  version: "1.1.0"
+  version: "1.2.1"
   provider: EKS
 
   scope:
@@ -17,9 +17,9 @@ spec:
     kubernetesVersion: "1.30"
     packages:
     - name: aws-ebs-csi-snapshot-controller
-      version: "3.0.6-1"
+      version: "3.0.6-2"
     - name: aws-ebs-csi-driver
-      version: "2.35.1-1"
+      version: "2.35.1-2"
     - name: aws-load-balancer-controller
       version: "1.9.0-1"
     - name: tigera-operator
@@ -45,6 +45,13 @@ spec:
         defaultProfile: baseline
         allowed: ["restricted", "baseline", "privileged"]
 
+    providerDetails:
+      eks:
+        generateLaunchTemplate: true
+        imdsV2Required: true
+        # Required for, at least, the AWS load balancer controller:
+        # https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.10/deploy/installation/#using-the-amazon-ec2-instance-metadata-server-version-2-imdsv2
+        imdsTokenResponseHopLimit: 2
   network:
     networkPlan: eks-standard
     authorizedMasterNetworks:

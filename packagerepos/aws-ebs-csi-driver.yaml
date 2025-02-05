@@ -2,6 +2,8 @@
 apiVersion: package.appvia.io/v2beta2
 kind: Repository
 metadata:
+  annotations:
+    appvia.io/createdBy: "Wayfinder"
   name: aws-ebs-csi-driver
 spec:
   url: https://kubernetes-sigs.github.io/aws-ebs-csi-driver

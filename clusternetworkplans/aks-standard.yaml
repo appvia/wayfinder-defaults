@@ -3,7 +3,7 @@ kind: ClusterNetworkPlan
 metadata:
   name: aks-standard
 spec:
-  summary: General purpose AKS cluster network
+  summary: General purpose AKS cluster network.
 
   template:
     plan: aks-standard

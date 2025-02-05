@@ -3,7 +3,7 @@ kind: ClusterNetworkPlan
 metadata:
   name: eks-standard
 spec:
-  summary: General purpose EKS cluster network
+  summary: General purpose EKS cluster network.
 
   template:
     plan: eks-standard
@@ -12,7 +12,7 @@ spec:
       type: aws
       aws:
         availabilityZones: 3
-        NatGateways: 3
+        natGateways: 3
     ipv4:
       cidrBlocks:
       - type: node

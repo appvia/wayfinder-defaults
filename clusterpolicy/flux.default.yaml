@@ -22,6 +22,9 @@ spec:
           - kind: ServiceAccount
             namespace: kube-system
             name: "wf-cluster-admin"
+          - kind: ServiceAccount
+            namespace: wf-manager
+            name: helm-controller
         validate:
           message: "HelmReleases must specify a ServiceAccount"
           pattern:

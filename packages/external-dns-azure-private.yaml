@@ -4,6 +4,7 @@ kind: Package
 metadata:
   name: external-dns-azure-private
   annotations:
+    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "External DNS for Azure (Private)"
 spec:
   version: "8.3.9-1"
@@ -13,7 +14,7 @@ spec:
   helm:
     releaseName: external-dns-azure-private
     helmTimeout: 300s
-    repositoryRef: wayfinder-builtin
+    repositoryRef: bitnami
     chartName: external-dns
     chartVersion: "8.3.9"
     valuesTemplate: |

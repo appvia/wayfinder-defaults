@@ -4,6 +4,7 @@ kind: Package
 metadata:
   name: ingress-nginx
   annotations:
+    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "External Ingress Nginx"
 spec:
   version: "4.11.3-1"

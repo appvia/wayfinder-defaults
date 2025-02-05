@@ -4,6 +4,7 @@ kind: Package
 metadata:
   name: terranetes-controller
   annotations:
+    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Terranetes Controller"
 spec:
   version: "0.7.21-1"

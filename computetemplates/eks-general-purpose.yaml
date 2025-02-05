@@ -9,7 +9,7 @@ spec:
   nodePools:
   - logicalName: compute
     diskSize: 30
-    image: AL2_x86_64
+    image: AL2023_x86_64_STANDARD
     machine: t3.large
     size: 2
     autoscaling:

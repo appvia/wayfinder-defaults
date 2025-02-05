@@ -9,7 +9,7 @@ spec:
     - cluster.admin
     - namespace.admin
     wayfinderGroups:
-    - admin
+    - owner
     groups:
     - owner
     subjectType: User

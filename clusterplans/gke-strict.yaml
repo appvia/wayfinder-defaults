@@ -6,7 +6,7 @@ metadata:
     appvia.io/published: "true"
 spec:
   description: Hardened GKE cluster with a restricted PSS Policy and no public ingress controller
-  version: "1.1.0"
+  version: "1.1.1"
   provider: GKE
 
   scope:

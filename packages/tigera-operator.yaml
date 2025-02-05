@@ -4,6 +4,7 @@ kind: Package
 metadata:
   name: tigera-operator
   annotations:
+    appvia.io/createdBy: "Wayfinder"
     appvia.io/displayName: "Tigera operator"
     appvia.io/packageProviderFilter: "EKS"
 spec:

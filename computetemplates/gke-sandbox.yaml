@@ -10,7 +10,7 @@ spec:
   - diskSize: 30
     autoscaling:
       enabled: true
-      maxSize: 3
+      maxSize: 10
       minSize: 1
     image: COS_CONTAINERD
     machine: n2-standard-2
@@ -18,4 +18,4 @@ spec:
     logicalName: compute
     size: 1
     spot:
-      enabled: false
+      enabled: false # Enable this when we move from Preemptible to Spot VMs (WF-1993)
