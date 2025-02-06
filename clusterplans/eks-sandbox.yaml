@@ -6,7 +6,7 @@ metadata:
     appvia.io/published: "true"
 spec:
   description: Low cost cluster configuration for testing purposes
-  version: "1.2.1"
+  version: "1.2.2"
   provider: EKS
 
   scope:
@@ -14,7 +14,7 @@ spec:
     allStages: true
 
   cluster:
-    kubernetesVersion: "1.30"
+    kubernetesVersion: "1.31"
     packages:
     - name: aws-ebs-csi-snapshot-controller
       version: "3.0.6-2"
@@ -38,8 +38,13 @@ spec:
       version: "2.7.3-6"
     - name: terranetes-controller
       version: "0.7.21-1"
+    - name: cluster-rbac
+      version: "1.0.0"
 
     security:
+      appDeploymentRoleDefault: wf.deployment.default
+      appDeploymentRoleLabels:
+        appvia.io/appdeployment: "true"
       podSecurityStandard:
         enabled: true
         defaultProfile: baseline

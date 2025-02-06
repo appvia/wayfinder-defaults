@@ -1,0 +1,139 @@
+---
+apiVersion: package.appvia.io/v2beta2
+kind: Package
+metadata:
+  name: cluster-rbac
+  annotations:
+    appvia.io/displayName: "Cluster RBAC"
+spec:
+  description: Deploys default cluster roles for workload deployments
+  version: "1.0.0"
+  installNamespace: kube-system
+
+  manifests:
+    - name: wf-deployment-default.yaml
+      template: |
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRole
+        metadata:
+          name: wf.deployment.default
+          labels:
+            appvia.io/appdeployment: "true"
+        rules:
+        # Read-only access to cluster-level resources
+        - verbs:
+            - get
+            - list
+            - watch
+          apiGroups:
+            - ''
+            - policy
+            - rbac.authorization.k8s.io
+          resources:
+            - clusterrolebindings
+            - clusterroles
+            - namespaces
+            - nodes
+            - podsecuritypolicies
+        - verbs:
+            - get
+            - list
+            - watch
+          apiGroups:
+            - cert-manager.io
+          resources:
+            - '*'
+        # Namespace-level resource access
+        - verbs:
+            - '*'
+          apiGroups:
+            - ''
+          resources:
+            - configmaps
+            - endpoints
+            - events
+            - persistentvolumeclaims
+            - persistentvolumes
+            - pods
+            - secrets
+            - serviceaccounts
+            - services
+        - verbs:
+            - '*'
+          apiGroups:
+            - apps
+            - batch
+            - coordination.k8s.io
+            - extensions
+            - networking.k8s.io
+          resources:
+            - cronjobs
+            - deployments
+            - deployments/rollback
+            - deployments/scale
+            - frontendconfigs
+            - ingressclasses
+            - ingresses
+            - jobs
+            - networkpolicies
+            - replicasets
+            - replicasets/scale
+            - replicationcontrollers/scale
+            - statefulsets
+            - statefulsets/scale
+        - verbs:
+            - '*'
+          apiGroups:
+            - policy
+          resources:
+            - poddisruptionbudgets
+        - verbs:
+            - create
+            - delete
+            - get
+            - list
+            - patch
+            - update
+          apiGroups:
+            - rbac.authorization.k8s.io
+          resources:
+            - roles
+            - rolebindings
+        - verbs:
+            - '*'
+          apiGroups:
+            - autoscaling
+          resources:
+            - horizontalpodautoscalers
+            - verticalpodautoscalers
+        - verbs:
+            - '*'
+          apiGroups:
+            - acme.cert-manager.io
+            - cert-manager.io
+            - helm.toolkit.fluxcd.io
+            - source.toolkit.fluxcd.io
+          resources:
+            - '*'
+        - verbs:
+            - '*'
+          apiGroups:
+            - terraform.appvia.io
+          resources:
+            - configurations
+
+    - name: wf-deployment-full-access.yaml
+      template: |
+        apiVersion: rbac.authorization.k8s.io/v1
+        kind: ClusterRole
+        metadata:
+          name: wf.deployment.full-access
+          labels:
+            appvia.io/appdeployment: "true"
+        rules:
+        - apiGroups:
+          - '*'
+          resources:
+          - '*'
+          verbs:
+          - '*'

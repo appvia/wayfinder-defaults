@@ -6,7 +6,7 @@ metadata:
     appvia.io/published: "true"
 spec:
   description: Hardened GKE cluster with a restricted PSS Policy and no public ingress controller
-  version: "1.1.1"
+  version: "1.1.2"
   provider: GKE
 
   scope:
@@ -14,7 +14,7 @@ spec:
     allStages: true
 
   cluster: 
-    kubernetesVersion: "1.30"
+    kubernetesVersion: "1.31"
     packages:
     - name: ingress-nginx-internal
       version: "4.11.3-1"
@@ -24,6 +24,8 @@ spec:
       version: "8.3.9-1"
     - name: kyverno
       version: "2.7.3-6"
+    - name: cluster-rbac
+      version: "1.0.0"
 
     providerDetails:
       gke:
@@ -35,6 +37,9 @@ spec:
         masterIPV4Cidr: 172.16.0.16/28
 
     security:
+      appDeploymentRoleDefault: wf.deployment.default
+      appDeploymentRoleLabels:
+        appvia.io/appdeployment: "true"
       podSecurityStandard:
         enabled: true
         defaultProfile: restricted
