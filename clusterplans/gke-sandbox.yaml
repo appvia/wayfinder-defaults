@@ -39,7 +39,7 @@ spec:
     security:
       appDeploymentRoleDefault: wf.deployment.default
       appDeploymentRoleLabels:
-        appvia.io/appdeployment: "true"
+        appvia.io/appDeployment: "true"
       podSecurityStandard:
         enabled: true
         defaultProfile: baseline

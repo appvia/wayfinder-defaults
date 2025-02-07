@@ -18,7 +18,7 @@ spec:
         metadata:
           name: wf.deployment.default
           labels:
-            appvia.io/appdeployment: "true"
+            appvia.io/appDeployment: "true"
         rules:
         # Read-only access to cluster-level resources
         - verbs:
@@ -129,7 +129,7 @@ spec:
         metadata:
           name: wf.deployment.full-access
           labels:
-            appvia.io/appdeployment: "true"
+            appvia.io/appDeployment: "true"
         rules:
         - apiGroups:
           - '*'

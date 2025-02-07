@@ -36,8 +36,6 @@ spec:
       version: "8.3.9-1"
     - name: kyverno
       version: "2.7.3-6"
-    - name: terranetes-controller
-      version: "0.7.21-1"
     - name: cluster-rbac
       version: "1.0.0"
 
@@ -59,7 +57,7 @@ spec:
     security:
       appDeploymentRoleDefault: wf.deployment.default
       appDeploymentRoleLabels:
-        appvia.io/appdeployment: "true"
+        appvia.io/appDeployment: "true"
       podSecurityStandard:
         enabled: true
         defaultProfile: restricted
