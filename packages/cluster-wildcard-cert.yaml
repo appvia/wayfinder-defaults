@@ -1,0 +1,36 @@
+apiVersion: package.appvia.io/v2beta2
+kind: Package
+metadata:
+  name:  cluster-wildcard-cert
+  annotations:
+    appvia.io/displayName: "Creates a wildcard certificate for the cluster's dynamic DNS zone"
+spec:
+  description: Provides a default wildcard certificate for the cluster when dynamic DNS is configured. Will no-op if no Dynamic DNS configured.
+  version: "1.0.0"
+  installNamespace: cluster-certs
+  dependencies:
+    - cert-manager
+  outputs:
+    - name: certsecret
+      description: The name of the cluster wildcard certificate secret
+      valueTemplate: cluster-wildcard-cert
+  manifests:
+    - name: default-cert.yaml
+      template: |
+        {{- if .Cluster.DefaultDomain }}
+        apiVersion: cert-manager.io/v1
+        kind: Certificate
+        metadata:
+          name: cluster-wildcard-cert
+        spec:
+          dnsNames:
+          - "*.{{ .Cluster.Name }}.{{ .Cluster.DefaultDomain }}"
+          - "*.{{ .Cluster.DefaultDomain }}"
+          issuerRef:
+            kind: ClusterIssuer
+            name: le-prod
+          secretName: cluster-wildcard-cert
+          usages:
+          - digital signature
+          - key encipherment
+        {{- end }}
