@@ -1,0 +1,70 @@
+apiVersion: compute.appvia.io/v2beta2
+kind: ClusterPlan
+metadata:
+  name: eks-default-cert
+  annotations:
+    appvia.io/published: "true"
+spec:
+  description: General purpose EKS cluster with a valid default certificate for the cluster's dynamic DNS zone
+  version: 1.0.0
+  provider: EKS
+
+  scope:
+    allWorkspaces: true
+    allStages: true
+
+  cluster:
+    kubernetesVersion: '1.31'
+    packages:
+    - name: aws-ebs-csi-snapshot-controller
+      version: 3.0.6-2
+    - name: aws-ebs-csi-driver
+      version: 2.35.1-2
+    - name: aws-load-balancer-controller
+      version: 1.9.0-1
+    - name: tigera-operator
+      version: 3.28.2-1
+    - name: metrics-server
+      version: 3.12.1-2
+    - name: cluster-autoscaler
+      version: 9.43.0-1
+    - name: cert-manager
+      version: 1.15.3-2
+    - name: cluster-wildcard-cert
+      version: 1.0.0
+    - name: ingress-nginx-cert
+      version: 4.11.3-1
+    - name: external-dns
+      version: 8.3.9-1
+    - name: kyverno
+      version: 2.7.3-6
+    - name: cluster-rbac
+      version: 1.0.0
+    providerDetails:
+      eks:
+        cloudWatchLogging:
+          audit: true
+        generateLaunchTemplate: true
+        imdsV2Required: true
+        # Required for, at least, the AWS load balancer controller:
+        # https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.10/deploy/installation/#using-the-amazon-ec2-instance-metadata-server-version-2-imdsv2
+        imdsTokenResponseHopLimit: 2
+    security:
+      appDeploymentRoleDefault: wf.deployment.default
+      appDeploymentRoleLabels:
+        appvia.io/appDeployment: 'true'
+      podSecurityStandard:
+        enabled: true
+        allowed:
+        - restricted
+        - baseline
+        - privileged
+        defaultProfile: baseline
+  network:
+    networkPlan: eks-standard
+    authorizedMasterNetworks:
+      - cidr: 0.0.0.0/0
+        name: default
+    authorizedNetworks:
+      - cidr: 0.0.0.0/0
+        name: default
