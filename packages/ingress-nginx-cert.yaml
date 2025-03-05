@@ -6,11 +6,32 @@ metadata:
   annotations:
     appvia.io/displayName: "External Ingress Nginx with default TLS certificate"
 spec:
-  version: "4.11.3-1"
+  version: "4.11.3-2"
   installNamespace: ingress
   description: Enables the capability to provision ingress services with a valid TLS certificate for the cluster's dynamic DNS zone.
   dependencies:
-    - cluster-wildcard-cert
+    - cert-manager
+  manifests:
+    - name: default-cert.yaml
+      preInstall: true
+      template: |
+        {{- if .Cluster.PublicDNSDomain }}
+        apiVersion: cert-manager.io/v1
+        kind: Certificate
+        metadata:
+          name: cluster-wildcard-cert
+        spec:
+          dnsNames:
+          - "*.{{ .Cluster.Name }}.{{ .Cluster.PublicDNSDomain }}"
+          - "*.{{ .Cluster.PublicDNSDomain }}"
+          issuerRef:
+            kind: ClusterIssuer
+            name: le-prod
+          secretName: cluster-wildcard-cert
+          usages:
+          - digital signature
+          - key encipherment
+        {{- end }}
   helm:
     releaseName: ingress-nginx
     chartName: ingress-nginx
@@ -21,9 +42,9 @@ spec:
 
     valuesTemplate: |
       controller:
-        {{- if .Cluster.DefaultDomain }}
+        {{- if .Cluster.PublicDNSDomain }}
         extraArgs:
-          default-ssl-certificate: "{{ (index .Cluster.Packages "cluster-wildcard-cert").InstallNamespace }}/{{ (index .Cluster.Packages "cluster-wildcard-cert").Outputs.certsecret.Value }}"
+          default-ssl-certificate: "ingress/cluster-wildcard-cert"
         {{- end }}
         affinity:
           podAntiAffinity:

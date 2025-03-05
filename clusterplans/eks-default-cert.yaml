@@ -6,7 +6,7 @@ metadata:
     appvia.io/published: "true"
 spec:
   description: General purpose EKS cluster with a valid default certificate for the cluster's dynamic DNS zone
-  version: 1.0.0
+  version: 1.0.1
   provider: EKS
 
   scope:
@@ -30,10 +30,8 @@ spec:
       version: 9.43.0-1
     - name: cert-manager
       version: 1.15.3-2
-    - name: cluster-wildcard-cert
-      version: 1.0.0
     - name: ingress-nginx-cert
-      version: 4.11.3-1
+      version: 4.11.3-2
     - name: external-dns
       version: 8.3.9-1
     - name: kyverno
