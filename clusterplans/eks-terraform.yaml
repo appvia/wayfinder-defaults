@@ -2,6 +2,8 @@ apiVersion: compute.appvia.io/v2beta2
 kind: ClusterPlan
 metadata:
   name: eks-terraform
+  annotations:
+    appvia.io/published: "true"
 spec:
   cluster:
     cloudResourcePlanRef:
