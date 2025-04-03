@@ -1,0 +1,21 @@
+apiVersion: networking.appvia.io/v2beta1
+kind: ClusterNetworkPlan
+metadata:
+  name: eks-terraform
+spec:
+  planProviderDetails: {}
+  summary: General purpose EKS cluster network.
+  template:
+    cloudResourcePlanRef:
+      name: aws-network-build
+      version: 0.0.1
+    ipv4:
+      cidrBlocks:
+      - cidr: 10.0.0.0/24
+        type: node
+    layout:
+      mode: auto
+      privateSubnets: 3
+      publicSubnets: 3
+    plan: eks-terraform
+    provider: aws

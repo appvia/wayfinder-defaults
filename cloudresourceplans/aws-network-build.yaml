@@ -1,0 +1,33 @@
+apiVersion: cloudresources.appvia.io/v2beta2
+kind: CloudResourcePlan
+metadata:
+  name: aws-network-build
+spec:
+  scope:
+    allStages: true
+    allWorkspaces: true
+  cloud: aws
+  description: networks for cluster provisioning on aws
+  inputs:
+  - description: The name to use for created cloud resources
+    name: cloud_resource
+    type: string
+  - description: The ip range used by nodes in this cluster
+    name: cidr_node
+    type: string
+  - description: The number of private subnets to create
+    name: layout_private_subnets
+    type: number
+  - description: The number of public subnets to create
+    name: layout_public_subnets
+    type: number
+  terraform:
+    moduleURL: https://github.com/appvia/terraform-aws-wayfinder-provisioning//network/build
+    moduleVersion: v0.0.1
+    tfVarsTemplate: |
+      cloud_resource = "{{ .Inputs.cloud_resource }}"
+      cidr_node = "{{ .Inputs.cidr_node }}"
+      layout_private_subnets = "{{ .Inputs.layout_private_subnets }}"
+      layout_public_subnets = "{{ .Inputs.layout_public_subnets }}"
+  version: 0.0.1
+  permission: NetworkManager

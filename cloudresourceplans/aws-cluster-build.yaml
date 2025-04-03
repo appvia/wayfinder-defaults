@@ -1,0 +1,33 @@
+apiVersion: cloudresources.appvia.io/v2beta2
+kind: CloudResourcePlan
+metadata:
+  name: aws-cluster-build
+spec:
+  scope:
+    allStages: true
+    allWorkspaces: true
+  cloud: aws
+  description: clusters for cluster provisioning on aws
+  inputs:
+  - description: The name to use for created cloud resources
+    name: cloud_resource
+    type: string
+  - description: The kubetnetes version of the created cluster
+    name: kubernetes_version
+    type: string
+  - description: The id of the vpc in which the cluster should be build
+    name: vpc_id
+    type: string
+  - description: The subnet ids in the vpc in which this cluster should be build
+    name: subnet_ids
+    type: list(string)
+  terraform:
+    moduleURL: https://github.com/appvia/terraform-aws-wayfinder-provisioning//cluster/build
+    moduleVersion: v0.0.1
+    tfVarsTemplate: |
+      cloud_resource = "{{ .Inputs.cloud_resource }}"
+      kubernetes_version = "{{ .Inputs.kubernetes_version }}"
+      vpc_id = "{{ .Inputs.vpc_id }}"
+      subnet_ids = [{{ range $index, $element := .Inputs.subnet_ids }}{{if $index}},{{end}}"{{$element}}"{{end}}]
+  version: 0.0.1
+  permission: ClusterManager
