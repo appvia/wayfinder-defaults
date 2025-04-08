@@ -8,7 +8,6 @@ spec:
 
   nodePools:
   - logicalName: compute
-    description: Compute Nodepool using Spot Instances
     diskSize: 30
     image: AL2023_x86_64_STANDARD
     machine: t3.large
