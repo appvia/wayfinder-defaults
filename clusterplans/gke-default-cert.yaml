@@ -1,7 +1,7 @@
 apiVersion: compute.appvia.io/v2beta2
 kind: ClusterPlan
 metadata:
-  name: gke-general-purpose
+  name: gke-default-cert
   annotations:
     appvia.io/published: "true"
 spec:
