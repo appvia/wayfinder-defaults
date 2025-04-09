@@ -1,0 +1,55 @@
+apiVersion: compute.appvia.io/v2beta2
+kind: ClusterPlan
+metadata:
+  name: gke-general-purpose
+  annotations:
+    appvia.io/published: "true"
+spec:
+  description: General purpose GKE cluster with a valid default certificate for the cluster's dynamic DNS zone
+  version: "1.0.0"
+  provider: GKE
+
+  scope:
+    allWorkspaces: true
+    allStages: true
+
+  cluster:
+    kubernetesVersion: "1.31"
+    packages:
+    - name: ingress-nginx-cert
+      version: "4.11.3-2"
+    - name: cert-manager
+      version: "1.15.3-2"
+    - name: external-dns
+      version: "8.3.9-1"
+    - name: kyverno
+      version: "2.7.3-6"
+    - name: cluster-rbac
+      version: "1.0.0"
+
+    providerDetails:
+      gke:
+        enableHTTPLoadBalancer: false
+        enableHorizontalPodAutoscaler: true
+        enableShieldedNodes: false
+        enableStackDriverLogging: true
+        enableStackDriverMetrics: true
+        masterIPV4Cidr: 172.16.0.16/28
+
+    security:
+      appDeploymentRoleDefault: wf.deployment.default
+      appDeploymentRoleLabels:
+        appvia.io/appDeployment: "true"
+      podSecurityStandard:
+        enabled: true
+        defaultProfile: baseline
+        allowed: ["restricted", "baseline", "privileged"]
+
+  network:
+    networkPlan: gke-standard
+    authorizedMasterNetworks:
+      - cidr: 0.0.0.0/0
+        name: default
+    authorizedNetworks:
+      - cidr: 0.0.0.0/0
+        name: default
