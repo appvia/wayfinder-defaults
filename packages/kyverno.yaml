@@ -6,7 +6,7 @@ metadata:
   annotations:
     appvia.io/displayName: "Kyverno Policy"
 spec:
-  version: "2.7.3-6"
+  version: "2.7.3-8"
   installNamespace: kyverno
   description: kyverno in clusters
 
@@ -27,3 +27,17 @@ spec:
               operator: NotIn
               values:
               - kube-system
+      resources:
+        # Use a higher memory limit than the default as if this is OOMKilled the
+        # cluster can be unusable.
+        limits:
+          memory: 1024Mi
+      # Run in high-availability mode as documented here: https://kyverno.io/docs/installation/methods/#high-availability-installation
+      admissionController:
+        replicas: 3
+      backgroundController:
+        replicas: 2
+      cleanupController:
+        replicas: 2
+      reportsController:
+        replicas: 2

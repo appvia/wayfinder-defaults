@@ -33,7 +33,7 @@ spec:
     - name: external-dns
       version: 8.3.9-1
     - name: kyverno
-      version: 2.7.3-6
+      version: 2.7.3-8
     - name: cluster-rbac
       version: 1.0.0
     security:
@@ -60,4 +60,4 @@ spec:
   scope:
     allStages: true
     allWorkspaces: true
-  version: 1.2.2
+  version: 1.2.3

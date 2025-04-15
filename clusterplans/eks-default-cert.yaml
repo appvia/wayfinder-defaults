@@ -6,7 +6,7 @@ metadata:
     appvia.io/published: "true"
 spec:
   description: General purpose EKS cluster with a valid default certificate for the cluster's dynamic DNS zone
-  version: 1.0.1
+  version: 1.0.2
   provider: EKS
 
   scope:
@@ -35,7 +35,7 @@ spec:
     - name: external-dns
       version: 8.3.9-1
     - name: kyverno
-      version: 2.7.3-6
+      version: 2.7.3-8
     - name: cluster-rbac
       version: 1.0.0
     providerDetails:

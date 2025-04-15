@@ -6,7 +6,7 @@ metadata:
     appvia.io/published: "true"
 spec:
   description: Hardened AKS cluster with a restricted PSS Policy and no public ingress controller
-  version: "1.1.2"
+  version: "1.1.3"
   provider: AKS
 
   scope:
@@ -23,7 +23,7 @@ spec:
     - name: external-dns-azure-private
       version: "8.3.9-1"
     - name: kyverno
-      version: "2.7.3-6"
+      version: "2.7.3-8"
     - name: cluster-rbac
       version: "1.0.0"
 
