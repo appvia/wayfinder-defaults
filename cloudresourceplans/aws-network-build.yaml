@@ -30,4 +30,3 @@ spec:
       layout_private_subnets = "{{ .Inputs.layout_private_subnets }}"
       layout_public_subnets = "{{ .Inputs.layout_public_subnets }}"
   version: 0.0.1
-  permission: NetworkManager

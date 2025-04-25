@@ -30,4 +30,3 @@ spec:
       vpc_id = "{{ .Inputs.vpc_id }}"
       subnet_ids = [{{ range $index, $element := .Inputs.subnet_ids }}{{if $index}},{{end}}"{{$element}}"{{end}}]
   version: 0.0.1
-  permission: ClusterManager
