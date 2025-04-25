@@ -46,4 +46,3 @@ spec:
       instance_types = [{{ range $index, $element := .Inputs.instance_types }}{{if $index}},{{end}}"{{$element}}"{{end}}]
       subnet_ids = [{{ range $index, $element := .Inputs.private_subnet_ids }}{{if $index}},{{end}}"{{$element}}"{{end}}]
   version: 0.0.1
-  permission: ClusterManager
