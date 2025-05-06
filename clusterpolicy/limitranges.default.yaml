@@ -19,6 +19,9 @@ spec:
           - kind: ServiceAccount
             name: "wf-cluster-admin"
             namespace: "kube-system"
+          - kind: ServiceAccount
+            name: "wf-agent"
+            namespace: "wf-manager"
         validate:
           message: "LimitRanges and ResourceQuotas are managed by cluster admins"
           deny:
