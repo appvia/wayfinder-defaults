@@ -1,0 +1,8 @@
+apiVersion: org.appvia.io/v2beta1
+kind: Integration
+metadata:
+  name: kubernetes
+spec:
+  description: The Kubernetes integration, when enabled, allows workspaces to import clusters
+  enabled: false
+  type: kubernetes
