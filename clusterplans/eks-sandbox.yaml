@@ -6,7 +6,7 @@ metadata:
     appvia.io/published: "true"
 spec:
   description: Low cost cluster configuration for testing purposes
-  version: "1.1.0"
+  version: "1.2.0"
   provider: EKS
 
   scope:
