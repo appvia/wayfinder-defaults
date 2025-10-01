@@ -6,16 +6,16 @@ metadata:
   annotations:
     appvia.io/displayName: "External DNS for Azure (Private)"
 spec:
-  version: "8.3.9-1"
+  version: "1.18.0-1"
   installNamespace: external-dns-private
   description: External DNS for Azure allows Kubernetes to manage DNS zones on Azure Private DNS
 
   helm:
     releaseName: external-dns-azure-private
     helmTimeout: 300s
-    repositoryRef: bitnami
+    repositoryRef: external-dns
     chartName: external-dns
-    chartVersion: "8.3.9"
+    chartVersion: "1.18.0"
     valuesTemplate: |
       domainFilters:
       {{- range .Cluster.DNSZones }}
@@ -27,15 +27,8 @@ spec:
       logFormat: json
       policy: sync
       txtOwnerId: {{ .Cluster.Name }}
-      replicas: 2
-      crd:
-        create: false
-      metrics:
-        enabled: true
-        serviceMonitor:
-          enabled: false
-      rbac:
-        apiVersion: v1
+      serviceMonitor:
+        enabled: false
       resources:
         limits:
           memory: 50Mi
@@ -56,12 +49,19 @@ spec:
         {{- end }}
       {{- end }}
       {{- if $resGrp }}
-      provider: azure-private-dns
-      azure:
-        tenantId: {{ .CloudAccessConfig.Azure.Tenant }}
-        subscriptionId: {{ .CloudAccessConfig.Azure.Subscription }}
-        useWorkloadIdentityExtension: true
-        resourceGroup: {{ $resGrp }}
+      provider:
+        name: azure-private-dns
+      env:
+      - name: AZURE_TENANT_ID
+        value: {{ .CloudAccessConfig.Azure.Tenant }}
+      - name: AZURE_SUBSCRIPTION_ID
+        value: {{ .CloudAccessConfig.Azure.Subscription }}
+      - name: AZURE_USE_WORKLOAD_IDENTITY_EXTENSION
+        value: "true"
+      - name: AZURE_RESOURCE_GROUP
+        value: {{ $resGrp }}
+      extraArgs:
+      - --azure-resource-group={{ $resGrp }}
       {{- end }}
 
   workloadIdentity:

@@ -7,15 +7,15 @@ metadata:
     appvia.io/displayName: "External DNS"
 spec:
   description: External DNS allows Kubernetes to manage DNS zones
-  version: "8.3.9-1"
+  version: "1.18.0-1"
   installNamespace: external-dns
 
   helm:
     releaseName: external-dns
     helmTimeout: 300s
-    repositoryRef: bitnami
+    repositoryRef: external-dns
     chartName: external-dns
-    chartVersion: "8.3.9"
+    chartVersion: "1.18.0"
     valuesTemplate: |
       domainFilters:
       {{- range .Cluster.DNSZones }}
@@ -25,15 +25,8 @@ spec:
       logFormat: json
       policy: sync
       txtOwnerId: {{ .Cluster.Name }}
-      replicas: 2
-      crd:
-        create: false
-      metrics:
-        enabled: true
-        serviceMonitor:
-          enabled: false
-      rbac:
-        apiVersion: v1
+      serviceMonitor:
+        enabled: false
       resources:
         limits:
           memory: 50Mi
@@ -49,9 +42,11 @@ spec:
       {{ .Package.WorkloadIdentity.PodLabels | toYaml | indent 2 }}
 
       {{- if .Cluster.AWS }}
-      provider: aws
-      aws:
-        region: {{ .Cluster.Region }}
+      provider:
+        name: aws
+      env:
+      - name: AWS_REGION
+        value: {{ .Cluster.Region }}
       {{- end }}
       {{- if .Cluster.Azure }}
       {{- $resGrp := "" }}
@@ -61,16 +56,24 @@ spec:
         {{- end }}
       {{- end }}
       {{- if $resGrp }}
-      provider: azure
-      azure:
-        tenantId: {{ .CloudAccessConfig.Azure.Tenant }}
-        subscriptionId: {{ .CloudAccessConfig.Azure.Subscription }}
-        useWorkloadIdentityExtension: true
-        resourceGroup: {{ $resGrp }}
+      provider:
+        name: azure
+      env:
+      - name: AZURE_TENANT_ID
+        value: {{ .CloudAccessConfig.Azure.Tenant }}
+      - name: AZURE_SUBSCRIPTION_ID
+        value: {{ .CloudAccessConfig.Azure.Subscription }}
+      - name: AZURE_USE_WORKLOAD_IDENTITY_EXTENSION
+        value: "true"
+      - name: AZURE_RESOURCE_GROUP
+        value: {{ $resGrp }}
+      extraArgs:
+      - --azure-resource-group={{ $resGrp }}
       {{- end }}
       {{- end }}
       {{- if .Cluster.GCP }}
-      provider: google
+      provider:
+        name: google
       {{- end }}
 
   workloadIdentity:
