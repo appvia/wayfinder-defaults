@@ -8,7 +8,7 @@ metadata:
     appvia.io/packageProviderFilter: "EKS"
 spec:
   description: Provides snapshot support to EKS clusters using AWS EBS
-  version: "3.0.6-1"
+  version: "3.0.6-2"
   installNamespace: snapshot-controller
 
   helm:
