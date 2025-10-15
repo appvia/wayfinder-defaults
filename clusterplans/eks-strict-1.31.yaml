@@ -1,20 +1,20 @@
 apiVersion: compute.appvia.io/v2beta2
 kind: ClusterPlan
 metadata:
-  name: eks-sandbox
+  name: eks-strict
   annotations:
     appvia.io/published: "true"
 spec:
-  description: Low cost cluster configuration for testing purposes
-  version: "1.3.0"
+  description: Hardened EKS cluster with a restricted PSS Policy and no public ingress controller
+  version: "1.2.0"
   provider: EKS
 
   scope:
     allWorkspaces: true
     allStages: true
 
-  cluster:
-    kubernetesVersion: "1.32"
+  cluster: 
+    kubernetesVersion: "1.31"
     packages:
     - name: aws-ebs-csi-snapshot-controller
       version: "3.0.6-2"
@@ -28,7 +28,7 @@ spec:
       version: "3.12.1-2"
     - name: cluster-autoscaler
       version: "9.43.0-1"
-    - name: ingress-nginx
+    - name: ingress-nginx-internal
       version: "4.11.3-1"
     - name: cert-manager
       version: "1.15.3-2"
@@ -39,24 +39,32 @@ spec:
     - name: terranetes-controller
       version: "0.7.21-1"
 
-    security:
-      podSecurityStandard:
-        enabled: true
-        defaultProfile: baseline
-        allowed: ["restricted", "baseline", "privileged"]
-
     providerDetails:
       eks:
+        cloudWatchLogging:
+          api: true
+          audit: true
+          authenticator: true
+          controllerManager: true
+          scheduler: true
+        encryption:
+          secretsEncryptionEnabled: true
         generateLaunchTemplate: true
         imdsV2Required: true
         # Required for, at least, the AWS load balancer controller:
         # https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.10/deploy/installation/#using-the-amazon-ec2-instance-metadata-server-version-2-imdsv2
         imdsTokenResponseHopLimit: 2
+    security:
+      podSecurityStandard:
+        enabled: true
+        defaultProfile: restricted
+        allowed: ["restricted"]
+
   network:
     networkPlan: eks-standard
     authorizedMasterNetworks:
-    - cidr: 0.0.0.0/0
-      name: default
+      - cidr: 0.0.0.0/0
+        name: default
     authorizedNetworks:
-    - cidr: 0.0.0.0/0
-      name: default
+      - cidr: 0.0.0.0/0
+        name: default

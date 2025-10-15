@@ -6,16 +6,16 @@ metadata:
   annotations:
     appvia.io/displayName: "External DNS for Azure (Private)"
 spec:
-  version: "8.3.9-1"
+  version: "10.19.0-1"
   installNamespace: external-dns-private
   description: External DNS for Azure allows Kubernetes to manage DNS zones on Azure Private DNS
 
   helm:
     releaseName: external-dns-azure-private
     helmTimeout: 300s
-    repositoryRef: wayfinder-builtin
+    repositoryRef: external-dns
     chartName: external-dns
-    chartVersion: "8.3.9"
+    chartVersion: "1.19.0"
     valuesTemplate: |
       domainFilters:
       {{- range .Cluster.DNSZones }}
@@ -27,15 +27,8 @@ spec:
       logFormat: json
       policy: sync
       txtOwnerId: {{ .Cluster.Name }}
-      replicas: 2
-      crd:
-        create: false
-      metrics:
-        enabled: true
-        serviceMonitor:
-          enabled: false
-      rbac:
-        apiVersion: v1
+      serviceMonitor:
+        enabled: false
       resources:
         limits:
           memory: 50Mi
@@ -56,12 +49,21 @@ spec:
         {{- end }}
       {{- end }}
       {{- if $resGrp }}
-      provider: azure-private-dns
-      azure:
-        tenantId: {{ .CloudAccessConfig.Azure.Tenant }}
-        subscriptionId: {{ .CloudAccessConfig.Azure.Subscription }}
-        useWorkloadIdentityExtension: true
-        resourceGroup: {{ $resGrp }}
+      provider:
+        name: azure-private-dns
+      extraArgs:
+      - --azure-resource-group={{ $resGrp }}
+      secretConfiguration:
+        enabled: true
+        mountPath: /etc/kubernetes
+        data:
+          azure.json: |
+            {
+              "tenantId": "{{ .CloudAccessConfig.Azure.Tenant }}",
+              "subscriptionId": "{{ .CloudAccessConfig.Azure.Subscription }}",
+              "resourceGroup": "{{ $resGrp }}",
+              "useWorkloadIdentityExtension": true
+            }
       {{- end }}
 
   workloadIdentity:
@@ -72,11 +74,17 @@ spec:
           # must always have a valid role for the workload identity to work
           - scope: /subscriptions/{{ .CloudAccessConfig.Azure.Subscription }}
             roleDefinitionName: Reader
+          {{- $resGrp := "" }}
           {{- if .Cluster.DNSZones }}
             {{- range .Cluster.DNSZones }}
               {{- if .Private }}
+              {{- $resGrp = .Azure.ResourceGroup }}
           - scope: {{ .ZoneID }}
             roleDefinitionName: Contributor
               {{- end }}
             {{- end }}
+          {{- end }}
+          {{- if $resGrp }}
+          - scope: /subscriptions/{{ .CloudAccessConfig.Azure.Subscription }}/resourceGroups/{{ $resGrp }}
+            roleDefinitionName: Reader
           {{- end }}
